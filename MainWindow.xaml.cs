@@ -247,6 +247,7 @@ namespace DialogMaker
         {
             if(thisLine-1 != dialogs.Count) 
                 {
+                
             load_line(thisLine+1);
             thisLine++;
             }
@@ -268,7 +269,21 @@ namespace DialogMaker
 
         private void delete_btn_Click(object sender, RoutedEventArgs e)
         {
-
+            if (thisLine-1 < dialogs.Count)
+            {
+                if (dialogs.Count > 0)
+                {
+                    if (thisLine - 1 > dialogs.Count)
+                    {
+                        thisLine = dialogs.Count;
+                    }
+                    Debug.WriteLine(thisLine);
+                    Debug.WriteLine(dialogs.Count);
+                    dialogs.RemoveAt(thisLine - 1);
+                    Set_UI(new GameDialog(), thisLine);
+                    load_line(thisLine);
+                }
+            }
         }
 
 

@@ -18,3 +18,4 @@ C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\refint\Dialog
 C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\DialogMaker.pdb
 C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\DialogMaker.genruntimeconfig.cache
 C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\ref\DialogMaker.dll
+C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\DialogMaker.sourcelink.json
