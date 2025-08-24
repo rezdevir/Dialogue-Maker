@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -20,13 +21,32 @@ public class GameDialog
     public string speaker {  get; set; }    
     public string emotion {  get; set; }    
     public bool isMain {  get; set; }   
-    public string text {  get; set; }   
+    public string text {  get; set; }
+
+    public string brach_id {  get; set; }   
+    public List<ChooiceSelection> chooices {  get; set; }   = new List<ChooiceSelection>(); 
     public string ToJson()
     {
      return   JsonSerializer.Serialize(this);
     }
-   
+
+    //public GameDialog Clone()
+    //{
+    //    return new GameDialog(this);
+    //}
 }
+   
+public class ChooiceSelection
+{
+    public string choice_head { get; set; } 
+    public string branch_name {  get; set; }    
+}
+
+//public class DialogueMetaData
+//{
+//    public string choice_text { get; set; }
+//    public string choice_branch { get; set; }
+//}
 
 public class Jsonn
 {
@@ -49,11 +69,21 @@ namespace DialogMaker
         List<string> list_emotion = new List<string>();
         int thisLine=1;
         bool isMain;
+        string main_brach= "Main_Branch";
+        string last_branch_combo;
+        //object last_b_combo ;
+        List<ChooiceSelection> choices_per_dialogue=new List<ChooiceSelection>();
+        List<ChooiceSelection> inlistbox = new List<ChooiceSelection>();
+        List<List<ChooiceSelection>> choices_all=new List<List<ChooiceSelection>>();
         List<GameDialog> dialogs=new List<GameDialog>();
         public MainWindow()
         {
-
+          
             InitializeComponent();
+            combo_branch.Items.Add(main_brach);
+            last_branch_combo =(string) combo_branch.Items[0];
+            combo_branch.SelectedValue= last_branch_combo;
+            //last_b_combo =  combo_branch.SelectedValue;
             read_parameter_file();
         }
 
@@ -113,26 +143,56 @@ namespace DialogMaker
 
         private bool Submit_Dialog()
         {
-            
-            if(combo_speakers.SelectedItem !=null && combo_emo.SelectedItem  != null 
-                && !text.Text.Equals(""))
+
+            if (combo_speakers.SelectedItem != null && combo_emo.SelectedItem != null
+                && !text.Text.Equals("") && combo_branch.SelectedItem!=null)
             {
-            
-            var dialog = new GameDialog();
-            dialog.text = text.Text;    
-            dialog.isMain = isMain;
-            dialog.speaker = combo_speakers.SelectedItem.ToString();
-            dialog.emotion = combo_emo.SelectedItem.ToString();
 
-                //dialogs.Add(dialog);
-                add_to_list(dialog,thisLine);
+                var dialog = new GameDialog();
+                dialog.text = text.Text;
+                dialog.isMain = isMain;
+                dialog.speaker = combo_speakers.SelectedItem.ToString();
+                dialog.emotion = combo_emo.SelectedItem.ToString();
+                dialog.brach_id = (string)combo_branch.SelectedValue;
+           
+                last_branch_combo = dialog.brach_id;
+           
 
-                Debug.WriteLine("Line Saved");
+
+                       Debug.WriteLine("Line Saved");
                 text.Text = "";
-                return true;
+              
+      
+
+      
+                        Debug.WriteLine("here ***********");
+   
+                  
+                        if (inlistbox.Count > 0)
+                {
+                    choices_per_dialogue.AddRange(inlistbox);
+  
+                }
+        
+                      
+                        
+                        dialog.chooices = new List<ChooiceSelection>(choices_per_dialogue); ;
+                      
+
+                        add_to_list(dialog, thisLine);
+                        choices_per_dialogue = new List<ChooiceSelection>();
+                        
+                        //Clear UI
+                        ListBox_Chooices.Items.Clear();
+                        CheckForBranchs();
+                        //dialog = choice;
+                        return true;
+       
+                
             }
             else { return false; }
-              
+
+            
 
         }
         private void add_to_list(GameDialog dialog,int line)
@@ -157,7 +217,7 @@ namespace DialogMaker
         {
             try
             {
-                var path = name_file_textbox.Text + ".txt";
+                var path = name_file_textbox.Text + ".json";
                 FileStream file;
                 //File.
                 if (!File.Exists(path))
@@ -203,6 +263,7 @@ namespace DialogMaker
 
                 load_line(thisLine - 1);
                 thisLine--;
+                CheckForBranchs();
             }
             else
             {
@@ -231,7 +292,7 @@ namespace DialogMaker
             main_radio.IsChecked = dialog.isMain;
             text.Text = dialog.text;
 
-            n_lines.Text = "Line : " + (line_) .ToString();
+                n_lines.Text = "Line : " + (line_).ToString();
             if(dialog.text!=null)
             {
                 n_chars.Text = "Number of Characters " + dialog.text.Length.ToString() + "//150";
@@ -240,8 +301,20 @@ namespace DialogMaker
             {
                 n_chars.Text = "Number of Characters " + 0.ToString() + "//150";
             }
-          
-            
+
+            if (dialog.chooices.Count == 0)
+            { ListBox_Chooices.Items.Clear(); }
+            else
+            {
+                inlistbox.Clear();
+                foreach (var ch in dialog.chooices)
+                {
+                    add_to_listbox_choice(ch);
+                    inlistbox.Add(ch);
+                }
+            }
+            last_branch_combo = dialog.brach_id;
+            CheckForBranchs();
         }
         private void next_line_btn_Click(object sender, RoutedEventArgs e)
         {
@@ -250,6 +323,7 @@ namespace DialogMaker
                 
             load_line(thisLine+1);
             thisLine++;
+                CheckForBranchs();
             }
             else
             {
@@ -303,7 +377,7 @@ namespace DialogMaker
         private void load_file_btn_Click(object sender, RoutedEventArgs e)
         {
 
-            string fileNameToOpen=name_file_textbox.Text+".txt";
+            string fileNameToOpen=name_file_textbox.Text+".json";
             if (File.Exists(fileNameToOpen))
             {
                 string json=File.ReadAllText(fileNameToOpen);   
@@ -315,5 +389,192 @@ namespace DialogMaker
             } 
                 
         }
+
+
+        private void ChoiceKeyDown_branch(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+
+                if (choice_text.Text != "")
+                {
+                    if(choice_branch.Text=="")
+                    {
+
+                        choice_branch.Text = Make_Name(thisLine, choices_per_dialogue.Count + 1);
+                    }
+                    if (!SaveChoice(choice_text.Text, choice_branch.Text))
+                    {
+                        MessageBox.Show("Branch name is unique ");
+                    }
+                    else { 
+                    }
+                }
+            }
+        }
+
+        private void ChoiceKeyDown_text(object sender, KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Enter) { 
+            
+                if(choice_text.Text !="" )
+                {
+                    if (choice_branch.Text != "")
+                    {
+                        // save
+                    }
+                    else
+                    {
+                        // It has be unique 
+                        choice_branch.Text = Make_Name(thisLine, choices_per_dialogue.Count + 1);
+                        //choice_branch.Text = thisLine.ToString() + "_" + "B" + (choices_per_dialogue.Count + 1).ToString ()+ ":";
+                    }
+                  if(  !SaveChoice(choice_text.Text, choice_branch.Text))
+                    {
+                        MessageBox.Show("Branch name is unique ");
+                    }
+                }
+                else
+                {
+                 
+                }
+            
+            }
+
+        }
+
+        private string Make_Name(int lineNumber,int i)
+        {
+            string ln = lineNumber.ToString();
+            string i_n = i.ToString();
+            string b_name = "branch_" + ln + "_"+ i_n;
+
+
+            return b_name;
+        }
+        private bool SaveChoice(string text,string branch)
+        {
+            //ShowListTome();
+            foreach (var ch in choices_all)
+            {
+                foreach (var item in ch)
+                {
+                    if (item.branch_name .Equals(branch))
+                    {
+                        return false;
+                    }
+                }
+            }
+            
+            ChooiceSelection choice=new ChooiceSelection();
+            choice.choice_head = text;
+            choice.branch_name = branch;
+
+            choices_per_dialogue.Add(choice);
+
+            add_to_listbox_choice(choice);
+            choices_all.Add(choices_per_dialogue);
+            choice_branch.Text = "";
+            choice_text.Text = "";
+            return true;
+        }
+        void CheckForBranchs()
+        {
+            combo_branch.SelectedItem = null;
+            combo_branch.Items.Clear();
+            List<string> branch_lists = new List<string>();
+            List<GameDialog> prev_dialog = new List<GameDialog>();
+        
+
+
+
+            for (int i = 0; i < thisLine - 1; i++)
+            {
+                prev_dialog.Add(dialogs[i]);
+             
+                if (dialogs[i].chooices.Count != 0)
+                {
+
+                    foreach (var ch in dialogs[i].chooices)
+                    {
+                        branch_lists.Add(ch.branch_name);
+                    }
+
+                }
+
+            }
+
+            branch_lists = del_branch_starter(branch_lists, prev_dialog);
+
+            foreach (var ch in branch_lists)
+            {
+                combo_branch.Items.Add(ch);
+            }
+
+            bool is_in = false;
+            if (last_branch_combo!=null)
+            if (last_branch_combo.Equals(main_brach)&& branch_lists.Count==0)
+            {
+                combo_branch.Items.Add(last_branch_combo);
+                combo_branch.SelectedItem = main_brach;
+
+            }
+            else
+            {
+ 
+                    foreach (var ch in branch_lists)
+                    {
+                        Debug.WriteLine(ch);
+
+                        if (last_branch_combo.Equals(ch))
+                        {
+                            is_in = true;
+                        break;
+                        }
+
+                    }
+              
+                    if (is_in)
+                    {
+                        combo_branch.SelectedValue = last_branch_combo;
+                    }
+                    else
+                    {
+                        combo_branch.SelectedValue = null;
+
+                    }
+            }
+        }
+
+
+
+
+        private List<string> del_branch_starter(List<string> branchs,List<GameDialog> prevD)
+        {
+            List<string> branch_starter=new List<string>();
+            foreach (var ch in prevD)
+            {
+                if(ch.chooices.Count!=0)
+                {
+                    branch_starter.Add(ch.brach_id);
+                }
+            }
+
+            foreach(var ch in branch_starter)
+            {
+                branchs.Remove(ch);
+            }
+            return branchs;
+        }
+
+
+        void add_to_listbox_choice(ChooiceSelection choice)
+        {
+            ListBox_Chooices.Items.Add(choice.choice_head + "  |  " + choice.branch_name);
+        }
+
+
+       
     }
 }
