@@ -1,1 +1,0 @@
-﻿{"dialogs":[{"speaker":"clay","emotion":"nothing","isMain":true,"text":"odfsdafsd","chooices":[]},{"speaker":"clay","emotion":"nothing","isMain":true,"text":"easaddsa","chooices":[]},{"speaker":"clay","emotion":"nothing","isMain":true,"text":"gsrrggfdgrd 3","chooices":[]},{"speaker":"clay","emotion":"nothing","isMain":true,"text":"fgksrjsdfjko 4","chooices":[]}]}

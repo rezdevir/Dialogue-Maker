@@ -17,8 +17,8 @@
             </Grid.ColumnDefinitions>
             <TextBlock HorizontalAlignment="Left" Grid.Column="0" Text="Speaker" Margin="73,-1,0,1" Width="42" ></TextBlock>
             <ComboBox Name="combo_speakers" Grid.Column="1" Margin="67,-1,6,1"/>
-            <RadioButton Name="main_radio" Grid.Column="2"  IsChecked="True" Content="Main"  Grid.ColumnSpan="2" Margin="37,0,25,0" Checked="main_radio_Checked" ></RadioButton>
-            <RadioButton Grid.Column="3" Content="Second" Margin="45,0,-45,0" Checked="RadioButton_Checked" ></RadioButton>
+            <RadioButton Name="left_radio" Grid.Column="2"  IsChecked="True" Content="Left"  Grid.ColumnSpan="2" Margin="37,0,25,0" Checked="left_radio_Checked" ></RadioButton>
+            <RadioButton Grid.Column="3" Content="Right" Margin="45,0,-45,0" Checked="RadioButton_Checked" ></RadioButton>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>

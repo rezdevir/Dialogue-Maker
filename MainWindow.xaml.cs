@@ -20,11 +20,11 @@ public class GameDialog
 {
     public string speaker {  get; set; }    
     public string emotion {  get; set; }    
-    public bool isMain {  get; set; }   
+    public bool isLeft {  get; set; }   
     public string text {  get; set; }
 
-    public string brach_id {  get; set; }   
-    public List<ChooiceSelection> chooices {  get; set; }   = new List<ChooiceSelection>(); 
+    public string branch_id {  get; set; }   
+    public List<MultipleChoiceModel> multiple_choice {  get; set; }   = new List<MultipleChoiceModel>(); 
     public string ToJson()
     {
      return   JsonSerializer.Serialize(this);
@@ -36,7 +36,7 @@ public class GameDialog
     //}
 }
    
-public class ChooiceSelection
+public class MultipleChoiceModel
 {
     public string choice_head { get; set; } 
     public string branch_name {  get; set; }    
@@ -68,13 +68,14 @@ namespace DialogMaker
         List<string> list_speakers = new List<string>();
         List<string> list_emotion = new List<string>();
         int thisLine=1;
-        bool isMain;
+        bool isLeft;
         string main_brach= "Main_Branch";
         string last_branch_combo;
+        private const string FILE_PATH = "Dialogues";
         //object last_b_combo ;
-        List<ChooiceSelection> choices_per_dialogue=new List<ChooiceSelection>();
-        List<ChooiceSelection> inlistbox = new List<ChooiceSelection>();
-        List<List<ChooiceSelection>> choices_all=new List<List<ChooiceSelection>>();
+        List<MultipleChoiceModel> choices_per_dialogue=new List<MultipleChoiceModel>();
+        List<MultipleChoiceModel> inlistbox = new List<MultipleChoiceModel>();
+        List<List<MultipleChoiceModel>> choices_all=new List<List<MultipleChoiceModel>>();
         List<GameDialog> dialogs=new List<GameDialog>();
         public MainWindow()
         {
@@ -89,19 +90,20 @@ namespace DialogMaker
 
         private void read_parameter_file()
         {
-            
-            if(File.Exists("speakers.txt"))
+            string sp_filepath = "parameters\\speakers.txt";
+            string emo_filepath = "parameters\\emotions.txt";
+            if (File.Exists(sp_filepath))
             {
-                var list = File.ReadAllLines("speakers.txt");
+                var list = File.ReadAllLines(sp_filepath);
                 foreach(var speaker in list) 
                     {
                     //list_speakers.Add(speaker);
                     combo_speakers.Items.Add(speaker);  
                     }
             }
-            if (File.Exists("emotions.txt"))
+            if (File.Exists(emo_filepath))
             {
-                var list = File.ReadAllLines("emotions.txt");
+                var list = File.ReadAllLines(emo_filepath);
                 foreach (var emo in list)
                 {
                     //list_speakers.Add(speaker);
@@ -150,12 +152,12 @@ namespace DialogMaker
 
                 var dialog = new GameDialog();
                 dialog.text = text.Text;
-                dialog.isMain = isMain;
+                dialog.isLeft = isLeft;
                 dialog.speaker = combo_speakers.SelectedItem.ToString();
                 dialog.emotion = combo_emo.SelectedItem.ToString();
-                dialog.brach_id = (string)combo_branch.SelectedValue;
+                dialog.branch_id = (string)combo_branch.SelectedValue;
            
-                last_branch_combo = dialog.brach_id;
+                last_branch_combo = dialog.branch_id;
            
 
 
@@ -176,11 +178,11 @@ namespace DialogMaker
         
                       
                         
-                        dialog.chooices = new List<ChooiceSelection>(choices_per_dialogue); ;
+                        dialog.multiple_choice = new List<MultipleChoiceModel>(choices_per_dialogue); ;
                       
 
                         add_to_list(dialog, thisLine);
-                        choices_per_dialogue = new List<ChooiceSelection>();
+                        choices_per_dialogue = new List<MultipleChoiceModel>();
                         
                         //Clear UI
                         ListBox_Chooices.Items.Clear();
@@ -217,15 +219,17 @@ namespace DialogMaker
         {
             try
             {
-                var path = name_file_textbox.Text + ".json";
+                var path = FILE_PATH +"\\"+ name_file_textbox.Text + ".json";
                 FileStream file;
                 //File.
                 if (!File.Exists(path))
                 {
+                    Directory.CreateDirectory(FILE_PATH);
                     file = File.Create(path);
                 }
                 else
                 {
+                   
                     file = File.Open(path, FileMode.Open);
                 }
                 file.Close();
@@ -236,23 +240,24 @@ namespace DialogMaker
                 File.WriteAllText(path, json, Encoding.UTF8);
                 return true;    
             }
-            catch (Exception ex) { 
-            return false;
+            catch (Exception ex) {
+                MessageBox.Show(ex.ToString(), "Not able to save file");
+                return false;
             
             }
    
         }
         
-        private void main_radio_Checked(object sender, RoutedEventArgs e)
+        private void left_radio_Checked(object sender, RoutedEventArgs e)
         {
-            isMain=true;
-            Debug.WriteLine(isMain); 
+            isLeft = true;
+            Debug.WriteLine(isLeft); 
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            isMain=false;
-            Debug.WriteLine(isMain);
+            isLeft =false;
+            Debug.WriteLine(isLeft);
         }
 
         private void prev_btn_Click(object sender, RoutedEventArgs e)
@@ -289,7 +294,7 @@ namespace DialogMaker
            
             combo_emo.SelectedItem = dialog.emotion;
             combo_speakers.SelectedItem = dialog.speaker;
-            main_radio.IsChecked = dialog.isMain;
+            left_radio.IsChecked = dialog.isLeft;
             text.Text = dialog.text;
 
                 n_lines.Text = "Line : " + (line_).ToString();
@@ -302,18 +307,18 @@ namespace DialogMaker
                 n_chars.Text = "Number of Characters " + 0.ToString() + "//150";
             }
 
-            if (dialog.chooices.Count == 0)
+            if (dialog.multiple_choice.Count == 0)
             { ListBox_Chooices.Items.Clear(); }
             else
             {
                 inlistbox.Clear();
-                foreach (var ch in dialog.chooices)
+                foreach (var ch in dialog.multiple_choice)
                 {
                     add_to_listbox_choice(ch);
                     inlistbox.Add(ch);
                 }
             }
-            last_branch_combo = dialog.brach_id;
+            last_branch_combo = dialog.branch_id;
             CheckForBranchs();
         }
         private void next_line_btn_Click(object sender, RoutedEventArgs e)
@@ -370,14 +375,14 @@ namespace DialogMaker
             }
             else
             {
-                MessageBox.Show("Not able to save file");
+             
             }
         }
 
         private void load_file_btn_Click(object sender, RoutedEventArgs e)
         {
 
-            string fileNameToOpen=name_file_textbox.Text+".json";
+            string fileNameToOpen=FILE_PATH+ "\\" + name_file_textbox.Text+".json";
             if (File.Exists(fileNameToOpen))
             {
                 string json=File.ReadAllText(fileNameToOpen);   
@@ -386,7 +391,12 @@ namespace DialogMaker
                 var ss = (Jsonn) obj;
                 dialogs = ss.dialogs;
                 load_line(thisLine);
-            } 
+            }
+            else
+            {
+                Directory.CreateDirectory(FILE_PATH);
+               
+            }
                 
         }
 
@@ -467,7 +477,7 @@ namespace DialogMaker
                 }
             }
             
-            ChooiceSelection choice=new ChooiceSelection();
+            MultipleChoiceModel choice=new MultipleChoiceModel();
             choice.choice_head = text;
             choice.branch_name = branch;
 
@@ -493,10 +503,10 @@ namespace DialogMaker
             {
                 prev_dialog.Add(dialogs[i]);
              
-                if (dialogs[i].chooices.Count != 0)
+                if (dialogs[i].multiple_choice.Count != 0)
                 {
 
-                    foreach (var ch in dialogs[i].chooices)
+                    foreach (var ch in dialogs[i].multiple_choice)
                     {
                         branch_lists.Add(ch.branch_name);
                     }
@@ -555,9 +565,9 @@ namespace DialogMaker
             List<string> branch_starter=new List<string>();
             foreach (var ch in prevD)
             {
-                if(ch.chooices.Count!=0)
+                if(ch.multiple_choice.Count!=0)
                 {
-                    branch_starter.Add(ch.brach_id);
+                    branch_starter.Add(ch.branch_id);
                 }
             }
 
@@ -569,7 +579,7 @@ namespace DialogMaker
         }
 
 
-        void add_to_listbox_choice(ChooiceSelection choice)
+        void add_to_listbox_choice(MultipleChoiceModel choice)
         {
             ListBox_Chooices.Items.Add(choice.choice_head + "  |  " + choice.branch_name);
         }

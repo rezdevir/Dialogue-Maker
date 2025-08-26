@@ -1,1 +1,0 @@
-﻿{"dialogs":[{"speaker":"floy","emotion":"sad","isMain":true,"text":"yhfjwakfwafwa","chooices":[]},{"speaker":"floy","emotion":"sad","isMain":true,"text":"drfhhjdrhhdr","chooices":[]}]}
