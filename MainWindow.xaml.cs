@@ -22,8 +22,8 @@ public class GameDialog
     public string emotion {  get; set; }    
     public bool isLeft {  get; set; }   
     public string text {  get; set; }
-
-    public string branch_id {  get; set; }   
+    public string branch_id {  get; set; }
+    public string action_name { get; set; }
     public List<MultipleChoiceModel> multiple_choice {  get; set; }   = new List<MultipleChoiceModel>(); 
     public string ToJson()
     {
@@ -156,17 +156,19 @@ namespace DialogMaker
                 dialog.speaker = combo_speakers.SelectedItem.ToString();
                 dialog.emotion = combo_emo.SelectedItem.ToString();
                 dialog.branch_id = (string)combo_branch.SelectedValue;
-           
+                dialog.action_name = action_textbox.Text;
+
                 last_branch_combo = dialog.branch_id;
            
 
 
                        Debug.WriteLine("Line Saved");
                 text.Text = "";
-              
-      
+                action_textbox.Text = "";
 
-      
+
+
+
                         Debug.WriteLine("here ***********");
    
                   
@@ -293,6 +295,7 @@ namespace DialogMaker
         {
            
             combo_emo.SelectedItem = dialog.emotion;
+            action_textbox.Text = dialog.action_name;
             combo_speakers.SelectedItem = dialog.speaker;
             left_radio.IsChecked = dialog.isLeft;
             text.Text = dialog.text;

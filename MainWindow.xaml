@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DialogMaker" 
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
-        Title="Dialogue Maker V0" Height="650" Width="550">
+        Title="Dialogue Maker V0" Height="700" Width="550">
     <StackPanel>
         <Grid Margin="0,20,0,20" RenderTransformOrigin="0.64,0.412">
             <Grid.ColumnDefinitions>
@@ -40,6 +40,19 @@
             <TextBlock Name="n_chars" Grid.Column="1" TextAlignment="Center" Text="Number of Characters 0/150"></TextBlock>
         </Grid>
         <TextBox TextWrapping="Wrap" x:Name="text" Height="224" Width="396" Keyboard.KeyDown="TextBox_KeyDown" />
+
+        <Label Margin="0,10,0,0"  HorizontalContentAlignment="Center" Content="Please Explain all of your actions in Readme, and follow action format"></Label>
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+  
+           
+            <Label  Grid.Column="0" Content="Action" HorizontalContentAlignment="Right" Margin="0,0,40,0" />
+            <TextBox  Grid.Column="1" Margin="0,0,95,0"  Name="action_textbox"></TextBox>
+            
+        </Grid> 
         <Grid Margin="0,15,0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
