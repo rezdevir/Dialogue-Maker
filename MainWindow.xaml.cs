@@ -24,6 +24,7 @@ public class GameDialog
     public string text {  get; set; }
     public string branch_id {  get; set; }
     public string action_name { get; set; }
+    public List<DialogueStyleModel> styles { get; set; } = new List<DialogueStyleModel>();
     public List<MultipleChoiceModel> multiple_choice {  get; set; }   = new List<MultipleChoiceModel>(); 
     public string ToJson()
     {
@@ -35,7 +36,52 @@ public class GameDialog
     //    return new GameDialog(this);
     //}
 }
-   
+
+
+public class DialogueStyleModel
+{
+    
+    public DStyle style { get; set; }
+
+}
+
+//[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
+//[JsonDerivedType(typeof(DialogueSpeed), "speed")]
+//[JsonDerivedType(typeof(DialogueColor), "color")]
+public class DStyle
+{
+    public string style_type { get; set; }
+    public int start { get; set; }
+    public int end { get; set; }
+    public string data { get; set; }    
+}
+//public class DialogueSpeed : DStyle
+//{
+
+//    public float delay { get; set; }
+
+
+//    public DialogueSpeed() { }
+
+//    public DialogueSpeed(DStyle baseStyle)
+//    {
+//        this.start = baseStyle.start;
+//        this.end = baseStyle.end;
+//    }
+//}
+//public class DialogueColor : DStyle
+//{
+//    public string color_hex { get; set; }
+
+//    public DialogueColor() { }
+
+//    public DialogueColor(DStyle baseStyle)
+//    {
+//        this.start = baseStyle.start;
+//        this.end = baseStyle.end;
+//    }
+//}
+
 public class MultipleChoiceModel
 {
     public string choice_head { get; set; } 
@@ -67,6 +113,7 @@ namespace DialogMaker
     {
         List<string> list_speakers = new List<string>();
         List<string> list_emotion = new List<string>();
+        List<DialogueStyleModel> dialogueStyles = new List<DialogueStyleModel>();
         int thisLine=1;
         bool isLeft;
         string main_brach= "Main_Branch";
@@ -149,7 +196,7 @@ namespace DialogMaker
             if (combo_speakers.SelectedItem != null && combo_emo.SelectedItem != null
                 && !text.Text.Equals("") && combo_branch.SelectedItem!=null)
             {
-
+                
                 var dialog = new GameDialog();
                 dialog.text = text.Text;
                 dialog.isLeft = isLeft;
@@ -177,15 +224,16 @@ namespace DialogMaker
                     choices_per_dialogue.AddRange(inlistbox);
   
                 }
-        
-                      
-                        
-                        dialog.multiple_choice = new List<MultipleChoiceModel>(choices_per_dialogue); ;
+
+
+                        dialog.styles = new List<DialogueStyleModel>(dialogueStyles);
+                        dialog.multiple_choice = new List<MultipleChoiceModel>(choices_per_dialogue); 
                       
 
                         add_to_list(dialog, thisLine);
                         choices_per_dialogue = new List<MultipleChoiceModel>();
-                        
+                        dialogueStyles = new List<DialogueStyleModel>();
+
                         //Clear UI
                         ListBox_Chooices.Items.Clear();
                         CheckForBranchs();
@@ -587,7 +635,39 @@ namespace DialogMaker
             ListBox_Chooices.Items.Add(choice.choice_head + "  |  " + choice.branch_name);
         }
 
+        private void set_style(object sender, RoutedEventArgs e)
+        {
+            if (!color_text.Text.Equals( ""))
+            {
+                DStyle dialogueColor = new DStyle();
+                dialogueColor.style_type = "color";
+                dialogueColor.start = text.SelectionStart;
+                dialogueColor.end = text.SelectionStart + (text.SelectionLength - 1);
+                dialogueColor.data = color_text.Text;
+                DialogueStyleModel objst=new DialogueStyleModel();
+                
+                objst.style = dialogueColor;
+                dialogueStyles.Add(objst);
 
-       
+            }
+
+            if (!speed_text.Text.Equals(""))
+            {
+
+                DStyle dialoguespeed = new DStyle();
+                dialoguespeed.style_type = "speed";
+                dialoguespeed.start = text.SelectionStart;
+                dialoguespeed.end = text.SelectionStart + (text.SelectionLength - 1);
+                dialoguespeed.data = speed_text.Text;
+                DialogueStyleModel objst = new DialogueStyleModel();
+               
+                objst.style = dialoguespeed;
+                dialogueStyles.Add(objst);
+            }
+            Debug.WriteLine(text.SelectionStart);
+            Debug.WriteLine(text.SelectionStart+(text.SelectionLength-1));
+        }
+
+      
     }
 }
