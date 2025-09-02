@@ -601,7 +601,53 @@ namespace DialogMaker
 
         private void set_style(object sender, RoutedEventArgs e)
         {
-            if (!color_text.Text.Equals( ""))
+            set_style_color();
+            set_style_text_speed();
+            set_style_bold();
+            set_style_italic();
+
+        }
+
+        void set_style_italic()
+        {
+            if ((bool)IsItalic_checkbox.IsChecked)
+            {
+
+                DStyle dialogueItalic = new DStyle();
+                dialogueItalic.style_type = "italic";
+                dialogueItalic.start = text.SelectionStart;
+                dialogueItalic.end = text.SelectionStart + (text.SelectionLength - 1);
+                dialogueItalic.data = "italic";
+                DialogueStyleModel objst = new DialogueStyleModel();
+                objst.style = dialogueItalic;
+                dialogueStyles.Add(objst);
+                IsItalic_checkbox.IsChecked = false;
+            }
+        }
+        void set_style_bold()
+        {
+            if ((bool)IsBold_checkbox.IsChecked)
+            {
+        
+                    DStyle dialogueBold = new DStyle();
+                     dialogueBold.style_type = "bold";
+                     dialogueBold.start = text.SelectionStart;
+                     dialogueBold.end = text.SelectionStart + (text.SelectionLength - 1);
+                     dialogueBold.data = "bold";
+                     DialogueStyleModel objst = new DialogueStyleModel();
+                     objst.style = dialogueBold;
+                     dialogueStyles.Add(objst);
+                     IsBold_checkbox.IsChecked = false;
+
+
+
+
+
+            }
+        }
+        void set_style_color()
+        {
+            if (!color_text.Text.Equals(""))
             {
                 bool s = ColorValidation.TryParse(color_text.Text);
                 if (s)
@@ -620,17 +666,19 @@ namespace DialogMaker
                 }
                 else
                 {
-                    
+
                     MessageBox.Show("Color is not Valid");
                 }
-                
+
 
             }
-
+        }
+        void set_style_text_speed()
+        {
             if (!speed_text.Text.Equals(""))
             {
-                
-                if(CheckSpeedTextValidation(speed_text.Text))
+
+                if (CheckSpeedTextValidation(speed_text.Text))
                 {
                     DStyle dialoguespeed = new DStyle();
                     dialoguespeed.style_type = "speed";
@@ -642,7 +690,7 @@ namespace DialogMaker
                     dialogueStyles.Add(objst);
                     speed_text.Text = "";
                 }
-      
+
             }
         }
         bool CheckSpeedTextValidation(string text)
