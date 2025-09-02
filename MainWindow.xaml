@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:DialogMaker" 
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
-        Title="Dialogue Maker V0" Height="720" Width="550">
-    <StackPanel>
+        Title="Dialogue Maker V0.1" Height="730" Width="550">
+    <StackPanel Height="704" VerticalAlignment="Top">
         <Grid Margin="0,20,0,20" RenderTransformOrigin="0.64,0.412">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25*"></ColumnDefinition>
@@ -48,13 +48,13 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button Content="Set Style" Grid.Column="3" Margin="0,10,0,10" Height="20" Width="60" Click="set_style"></Button>
+            <Button Content="Set Style" Grid.Column="2" Margin="0,10,0,10" Height="20" Width="60" Click="set_style"></Button>
             <TextBlock Grid.Column="0" Margin="1,10,0,10" Text="color"></TextBlock>
             <TextBox  Name="color_text" Grid.Column="0" Margin="0,10,5,10" Height="20" Width="90" HorizontalAlignment="Right" ></TextBox>
 
             <TextBlock Grid.Column="1" Margin="1,10,0,10" Text="speed"></TextBlock>
             <TextBox Name="speed_text" Grid.Column="1" Margin="0,10,5,10" Height="20" Width="90" HorizontalAlignment="Right" ></TextBox>
-
+            <Button Grid.Column="3" Content="Reset" Height="20" Width="60" Click="Reset_Style_Click" ></Button>
         
         </Grid>
 
@@ -105,10 +105,12 @@
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBox Name="name_file_textbox" Grid.Column="0" Text="FolderName" ></TextBox>
-            <Button Background="DarkCyan" BorderBrush="Green" Name="save_file_btn" Grid.Column="1" Content="Save File"  Click="save_file_btn_Click" Margin="30,0,23,0" ></Button>
-            <Button Name="load_file_btn" Grid.Column="1" Content="load File"   Grid.ColumnSpan="2" Margin="166,0,55,0" Click="load_file_btn_Click" ></Button>
+            <TextBox Name="name_file_textbox" Grid.Column="0" Text="Dialogue_FileName" ></TextBox>
+            <Button Background="DarkCyan" BorderBrush="Green" Name="save_file_btn" Grid.Column="1" Content="Save File" Width="70" Click="save_file_btn_Click"  ></Button>
+            <Button Name="load_file_btn" Grid.Column="1" Content="load File"   Grid.ColumnSpan="2" Margin="30,0,0,0" Width="70" Click="load_file_btn_Click" ></Button>
+            <Button Grid.Column="3" Content="Open Folder" Width="70" Click="Open_Folder_Click"></Button>
         </Grid>
     </StackPanel>
 </Window>

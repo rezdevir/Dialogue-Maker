@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Win32;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -30,11 +31,6 @@ public class GameDialog
     {
      return   JsonSerializer.Serialize(this);
     }
-
-    //public GameDialog Clone()
-    //{
-    //    return new GameDialog(this);
-    //}
 }
 
 
@@ -45,9 +41,7 @@ public class DialogueStyleModel
 
 }
 
-//[JsonPolymorphic(TypeDiscriminatorPropertyName = "type")]
-//[JsonDerivedType(typeof(DialogueSpeed), "speed")]
-//[JsonDerivedType(typeof(DialogueColor), "color")]
+
 public class DStyle
 {
     public string style_type { get; set; }
@@ -55,32 +49,7 @@ public class DStyle
     public int end { get; set; }
     public string data { get; set; }    
 }
-//public class DialogueSpeed : DStyle
-//{
 
-//    public float delay { get; set; }
-
-
-//    public DialogueSpeed() { }
-
-//    public DialogueSpeed(DStyle baseStyle)
-//    {
-//        this.start = baseStyle.start;
-//        this.end = baseStyle.end;
-//    }
-//}
-//public class DialogueColor : DStyle
-//{
-//    public string color_hex { get; set; }
-
-//    public DialogueColor() { }
-
-//    public DialogueColor(DStyle baseStyle)
-//    {
-//        this.start = baseStyle.start;
-//        this.end = baseStyle.end;
-//    }
-//}
 
 public class MultipleChoiceModel
 {
@@ -88,11 +57,6 @@ public class MultipleChoiceModel
     public string branch_name {  get; set; }    
 }
 
-//public class DialogueMetaData
-//{
-//    public string choice_text { get; set; }
-//    public string choice_branch { get; set; }
-//}
 
 public class Jsonn
 {
@@ -639,35 +603,73 @@ namespace DialogMaker
         {
             if (!color_text.Text.Equals( ""))
             {
-                DStyle dialogueColor = new DStyle();
-                dialogueColor.style_type = "color";
-                dialogueColor.start = text.SelectionStart;
-                dialogueColor.end = text.SelectionStart + (text.SelectionLength - 1);
-                dialogueColor.data = color_text.Text;
-                DialogueStyleModel objst=new DialogueStyleModel();
+                bool s = ColorValidation.TryParse(color_text.Text);
+                if (s)
+                {
+
+
+                    DStyle dialogueColor = new DStyle();
+                    dialogueColor.style_type = "color";
+                    dialogueColor.start = text.SelectionStart;
+                    dialogueColor.end = text.SelectionStart + (text.SelectionLength - 1);
+                    dialogueColor.data = color_text.Text.ToLower();
+                    DialogueStyleModel objst = new DialogueStyleModel();
+                    objst.style = dialogueColor;
+                    dialogueStyles.Add(objst);
+                    color_text.Text = "";
+                }
+                else
+                {
+                    
+                    MessageBox.Show("Color is not Valid");
+                }
                 
-                objst.style = dialogueColor;
-                dialogueStyles.Add(objst);
 
             }
 
             if (!speed_text.Text.Equals(""))
             {
-
-                DStyle dialoguespeed = new DStyle();
-                dialoguespeed.style_type = "speed";
-                dialoguespeed.start = text.SelectionStart;
-                dialoguespeed.end = text.SelectionStart + (text.SelectionLength - 1);
-                dialoguespeed.data = speed_text.Text;
-                DialogueStyleModel objst = new DialogueStyleModel();
-               
-                objst.style = dialoguespeed;
-                dialogueStyles.Add(objst);
+                
+                if(CheckSpeedTextValidation(speed_text.Text))
+                {
+                    DStyle dialoguespeed = new DStyle();
+                    dialoguespeed.style_type = "speed";
+                    dialoguespeed.start = text.SelectionStart;
+                    dialoguespeed.end = text.SelectionStart + (text.SelectionLength - 1);
+                    dialoguespeed.data = speed_text.Text;
+                    DialogueStyleModel objst = new DialogueStyleModel();
+                    objst.style = dialoguespeed;
+                    dialogueStyles.Add(objst);
+                    speed_text.Text = "";
+                }
+      
             }
-            Debug.WriteLine(text.SelectionStart);
-            Debug.WriteLine(text.SelectionStart+(text.SelectionLength-1));
+        }
+        bool CheckSpeedTextValidation(string text)
+        {
+            try
+            {
+                float.Parse(text);
+
+                return true;
+            }
+            catch
+            {
+                MessageBox.Show("Please insert float number");
+                return false;
+            }
         }
 
-      
+
+        private void Reset_Style_Click(object sender, RoutedEventArgs e)
+        {
+            dialogueStyles.Clear(); 
+        }
+
+        private void Open_Folder_Click(object sender, RoutedEventArgs e)
+        {
+            var path =  FILE_PATH;
+            Process.Start("explorer.exe",path);
+        }
     }
 }
