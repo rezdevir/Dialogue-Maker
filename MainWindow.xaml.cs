@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using DialogMaker.Model;
+using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -17,55 +18,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-public class GameDialog
-{
-    public string speaker {  get; set; }    
-    public string emotion {  get; set; }    
-    public bool isLeft {  get; set; }   
-    public string text {  get; set; }
-    public string branch_id {  get; set; }
-    public string action_name { get; set; }
-    public List<DialogueStyleModel> styles { get; set; } = new List<DialogueStyleModel>();
-    public List<MultipleChoiceModel> multiple_choice {  get; set; }   = new List<MultipleChoiceModel>(); 
-    public string ToJson()
-    {
-     return   JsonSerializer.Serialize(this);
-    }
-}
 
 
-public class DialogueStyleModel
-{
-    
-    public DStyle style { get; set; }
-
-}
 
 
-public class DStyle
-{
-    public string style_type { get; set; }
-    public int start { get; set; }
-    public int end { get; set; }
-    public string data { get; set; }    
-}
-
-
-public class MultipleChoiceModel
-{
-    public string choice_head { get; set; } 
-    public string branch_name {  get; set; }    
-}
-
-
-public class Jsonn
-{
-    public List<GameDialog> dialogs { get; set; }
-    public string ToJson()
-    {
-        return JsonSerializer.Serialize(this);
-    }
-}
+/// First Released Version for dialogue maker 
 namespace DialogMaker
 {
     /// <summary>
@@ -87,7 +44,7 @@ namespace DialogMaker
         List<MultipleChoiceModel> choices_per_dialogue=new List<MultipleChoiceModel>();
         List<MultipleChoiceModel> inlistbox = new List<MultipleChoiceModel>();
         List<List<MultipleChoiceModel>> choices_all=new List<List<MultipleChoiceModel>>();
-        List<GameDialog> dialogs=new List<GameDialog>();
+        List<GameDialogue> dialogs=new List<GameDialogue>();
         public MainWindow()
         {
           
@@ -148,7 +105,7 @@ namespace DialogMaker
                 }
                 else
                 {
-                    MessageBox.Show("the number of character is exceed!","Too much character");
+                    MessageBox.Show("The number of character is exceed!","Too much character");
                 }
             }
         }
@@ -161,7 +118,7 @@ namespace DialogMaker
                 && !text.Text.Equals("") && combo_branch.SelectedItem!=null)
             {
                 
-                var dialog = new GameDialog();
+                var dialog = new GameDialogue();
                 dialog.text = text.Text;
                 dialog.isLeft = isLeft;
                 dialog.speaker = combo_speakers.SelectedItem.ToString();
@@ -211,7 +168,7 @@ namespace DialogMaker
             
 
         }
-        private void add_to_list(GameDialog dialog,int line)
+        private void add_to_list(GameDialogue dialog,int line)
 
         {
             if (dialogs.Count == line - 1)
@@ -248,7 +205,7 @@ namespace DialogMaker
                 }
                 file.Close();
                 string json;
-                Jsonn j = new Jsonn();
+                DialogueToJson j = new DialogueToJson();
                 j.dialogs = dialogs;
                 json = j.ToJson();
                 File.WriteAllText(path, json, Encoding.UTF8);
@@ -303,7 +260,7 @@ namespace DialogMaker
             }
         }
 
-        private void Set_UI(GameDialog dialog,int line_)
+        private void Set_UI(GameDialogue dialog,int line_)
         {
            
             combo_emo.SelectedItem = dialog.emotion;
@@ -349,7 +306,7 @@ namespace DialogMaker
             {
                 thisLine=dialogs.Count + 1;
 
-                Set_UI(new GameDialog(), thisLine);
+                Set_UI(new GameDialogue(), thisLine);
             }
         }
 
@@ -374,7 +331,7 @@ namespace DialogMaker
                     Debug.WriteLine(thisLine);
                     Debug.WriteLine(dialogs.Count);
                     dialogs.RemoveAt(thisLine - 1);
-                    Set_UI(new GameDialog(), thisLine);
+                    Set_UI(new GameDialogue(), thisLine);
                     load_line(thisLine);
                 }
             }
@@ -402,8 +359,8 @@ namespace DialogMaker
             {
                 string json=File.ReadAllText(fileNameToOpen);   
                 dialogs.Clear();
-                var obj=JsonSerializer.Deserialize(json, typeof(Jsonn));
-                var ss = (Jsonn) obj;
+                var obj=JsonSerializer.Deserialize(json, typeof(DialogueToJson));
+                var ss = (DialogueToJson) obj;
                 dialogs = ss.dialogs;
                 load_line(thisLine);
             }
@@ -509,7 +466,7 @@ namespace DialogMaker
             combo_branch.SelectedItem = null;
             combo_branch.Items.Clear();
             List<string> branch_lists = new List<string>();
-            List<GameDialog> prev_dialog = new List<GameDialog>();
+            List<GameDialogue> prev_dialog = new List<GameDialogue>();
         
 
 
@@ -575,7 +532,7 @@ namespace DialogMaker
 
 
 
-        private List<string> del_branch_starter(List<string> branchs,List<GameDialog> prevD)
+        private List<string> del_branch_starter(List<string> branchs,List<GameDialogue> prevD)
         {
             List<string> branch_starter=new List<string>();
             foreach (var ch in prevD)
@@ -639,10 +596,6 @@ namespace DialogMaker
                      dialogueStyles.Add(objst);
                      IsBold_checkbox.IsChecked = false;
 
-
-
-
-
             }
         }
         void set_style_color()
@@ -669,8 +622,6 @@ namespace DialogMaker
 
                     MessageBox.Show("Color is not Valid");
                 }
-
-
             }
         }
         void set_style_text_speed()
