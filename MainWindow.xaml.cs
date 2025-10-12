@@ -40,6 +40,7 @@ namespace DialogMaker
         string main_brach= "Main_Branch";
         string last_branch_combo;
         private const string FILE_PATH = "Dialogues";
+        private const string FILE_PATH_PARA = "parameters";
         //object last_b_combo ;
         List<MultipleChoiceModel> choices_per_dialogue=new List<MultipleChoiceModel>();
         List<MultipleChoiceModel> inlistbox = new List<MultipleChoiceModel>();
@@ -69,6 +70,10 @@ namespace DialogMaker
                     combo_speakers.Items.Add(speaker);  
                     }
             }
+            else
+            {
+               
+            }
             if (File.Exists(emo_filepath))
             {
                 var list = File.ReadAllLines(emo_filepath);
@@ -78,6 +83,7 @@ namespace DialogMaker
                     combo_emo.Items.Add(emo);
                 }
             }
+            else {  }
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -249,15 +255,20 @@ namespace DialogMaker
         private void load_line(int line)
         {
             int iterator=1;
-            foreach(var item in dialogs)
-            {
-                if(iterator==line)
+         
+                foreach (var item in dialogs)
                 {
-                    Set_UI(item, iterator);
-                    break;
+                    if (iterator == line)
+                    {
+                        Set_UI(item, iterator);
+                        break;
+                    }
+                    iterator++;
                 }
-                iterator++;
-            }
+            
+     
+           
+  
         }
 
         private void Set_UI(GameDialogue dialog,int line_)
@@ -354,13 +365,26 @@ namespace DialogMaker
         private void load_file_btn_Click(object sender, RoutedEventArgs e)
         {
 
-            string fileNameToOpen=FILE_PATH+ "\\" + name_file_textbox.Text+".json";
-            if (File.Exists(fileNameToOpen))
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "Dialogue files (*.json)|*.json"; ;
+            dialog.DefaultDirectory = FILE_PATH;
+            dialog.ShowDialog();
+            dialog.AddExtension= true;
+       
+            //string fileNameToOpen=FILE_PATH+ "\\" + name_file_textbox.Text+".json";
+            string path = dialog.FileName;
+            if (File.Exists(path))
             {
-                string json=File.ReadAllText(fileNameToOpen);   
+                string json=File.ReadAllText(path);   
                 dialogs.Clear();
                 var obj=JsonSerializer.Deserialize(json, typeof(DialogueToJson));
                 var ss = (DialogueToJson) obj;
+                if(ss.dialogs == null)
+                {
+                    MessageBox.Show( "File is Not Dialogue Format!");
+                    return;
+                    
+                }
                 dialogs = ss.dialogs;
                 load_line(thisLine);
             }
@@ -558,14 +582,30 @@ namespace DialogMaker
 
         private void set_style(object sender, RoutedEventArgs e)
         {
-            set_style_color();
-            set_style_text_speed();
-            set_style_bold();
-            set_style_italic();
+            
+
+            string color_s = set_style_color();
+            string speed_s = set_style_text_speed();
+            string bold_s = set_style_bold();
+            string italic_s = set_style_italic();
+
+            if (!color_s.Equals("") || !speed_s.Equals("") || !bold_s.Equals("") ||
+                !italic_s.Equals("")  )
+            {
+                string st = text.SelectionStart.ToString();
+                string end_s = (text.SelectionStart + (text.SelectionLength - 1)).ToString();
+                string Header = "Style for " + st + " --- " + end_s;
+                string tmp = text.Text;
+                string selction_TTEXT = tmp.Substring(text.SelectionStart, text.SelectionStart + (text.SelectionLength - 1));
+                string message = "Selection Line :\n" + selction_TTEXT + "\n\nStyles :" + color_s + speed_s +
+                    bold_s + italic_s;
+
+                MessageBox.Show(message, Header);
+            }
 
         }
 
-        void set_style_italic()
+        string set_style_italic()
         {
             if ((bool)IsItalic_checkbox.IsChecked)
             {
@@ -579,9 +619,11 @@ namespace DialogMaker
                 objst.style = dialogueItalic;
                 dialogueStyles.Add(objst);
                 IsItalic_checkbox.IsChecked = false;
+                return " (Italic) ";
             }
+            return "";
         }
-        void set_style_bold()
+        string set_style_bold()
         {
             if ((bool)IsBold_checkbox.IsChecked)
             {
@@ -595,10 +637,12 @@ namespace DialogMaker
                      objst.style = dialogueBold;
                      dialogueStyles.Add(objst);
                      IsBold_checkbox.IsChecked = false;
+                return " (Bold) ";
 
             }
+            return "";
         }
-        void set_style_color()
+        string set_style_color()
         {
             if (!color_text.Text.Equals(""))
             {
@@ -615,16 +659,20 @@ namespace DialogMaker
                     DialogueStyleModel objst = new DialogueStyleModel();
                     objst.style = dialogueColor;
                     dialogueStyles.Add(objst);
+                    
                     color_text.Text = "";
+                    return " (Color Set To: "+ dialogueColor.data+") ";
                 }
                 else
                 {
 
                     MessageBox.Show("Color is not Valid");
                 }
+             
             }
+            return "";
         }
-        void set_style_text_speed()
+        string set_style_text_speed()
         {
             if (!speed_text.Text.Equals(""))
             {
@@ -640,9 +688,11 @@ namespace DialogMaker
                     objst.style = dialoguespeed;
                     dialogueStyles.Add(objst);
                     speed_text.Text = "";
+                    return " (Speed Change to : "+ dialoguespeed.data+") ";
                 }
 
             }
+            return "";
         }
         bool CheckSpeedTextValidation(string text)
         {
@@ -668,6 +718,11 @@ namespace DialogMaker
         private void Open_Folder_Click(object sender, RoutedEventArgs e)
         {
             var path =  FILE_PATH;
+            Process.Start("explorer.exe",path);
+        }
+        private void Open_Folder_para_Click(object sender, RoutedEventArgs e)
+        {
+            var path = FILE_PATH_PARA;
             Process.Start("explorer.exe",path);
         }
     }

@@ -16,7 +16,7 @@
 
 
     <Style TargetType="Border">
-        <Setter Property="CornerRadius" Value="3"/>
+        <Setter Property="CornerRadius" Value="2"/>
         <Setter Property="Padding" Value="0,0,0,0"/>
         <Setter Property="Background" Value="White"/>
         
