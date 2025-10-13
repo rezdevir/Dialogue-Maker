@@ -34,6 +34,7 @@ namespace DialogMaker
     {
         List<string> list_speakers = new List<string>();
         List<string> list_emotion = new List<string>();
+        string text_animatation="normal";
         List<DialogueStyleModel> dialogueStyles = new List<DialogueStyleModel>();
         int thisLine=1;
         bool isLeft;
@@ -224,18 +225,39 @@ namespace DialogMaker
             }
    
         }
-        
+
+        #region Radiobtn
         private void left_radio_Checked(object sender, RoutedEventArgs e)
         {
             isLeft = true;
-            Debug.WriteLine(isLeft); 
+           
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        private void right_radio_Checked(object sender, RoutedEventArgs e)
         {
             isLeft =false;
-            Debug.WriteLine(isLeft);
+            
         }
+        
+        private void normal_radio(object sender, RoutedEventArgs e)
+        {
+            text_animatation = "normal";
+
+        }
+
+        private void waving_radio(object sender, RoutedEventArgs e)
+        {
+            text_animatation = "waving";
+
+        }
+        private void shocking_radio(object sender, RoutedEventArgs e)
+        {
+            text_animatation = "shocking";
+        }
+        #endregion Radiobtn
+
+
+
 
         private void prev_btn_Click(object sender, RoutedEventArgs e)
         {
@@ -588,21 +610,47 @@ namespace DialogMaker
             string speed_s = set_style_text_speed();
             string bold_s = set_style_bold();
             string italic_s = set_style_italic();
-
+            string animation_s = set_style_animation();
+        
+            if(text.SelectionLength >0)
+            
             if (!color_s.Equals("") || !speed_s.Equals("") || !bold_s.Equals("") ||
-                !italic_s.Equals("")  )
+                !italic_s.Equals("") ||!animation_s.Equals(""))
             {
                 string st = text.SelectionStart.ToString();
                 string end_s = (text.SelectionStart + (text.SelectionLength - 1)).ToString();
                 string Header = "Style for " + st + " --- " + end_s;
                 string tmp = text.Text;
-                string selction_TTEXT = tmp.Substring(text.SelectionStart, text.SelectionStart + (text.SelectionLength - 1));
+                Debug.WriteLine("start and end="+st + ":"+ end_s);   
+                string selction_TTEXT = tmp.Substring(text.SelectionStart, (text.SelectionLength ));
                 string message = "Selection Line :\n" + selction_TTEXT + "\n\nStyles :" + color_s + speed_s +
                     bold_s + italic_s;
 
                 MessageBox.Show(message, Header);
             }
 
+        }
+
+        string set_style_animation()
+        {
+            if (!text_animatation.Equals("normal"))
+            {
+
+                DStyle dialogueAnimation = new DStyle();
+                dialogueAnimation.style_type = "animation";
+                dialogueAnimation.start = text.SelectionStart;
+                dialogueAnimation.end = text.SelectionStart + (text.SelectionLength - 1);
+                dialogueAnimation.data = text_animatation;
+                DialogueStyleModel objst = new DialogueStyleModel();
+                objst.style = dialogueAnimation;
+                dialogueStyles.Add(objst);
+               
+                normal_radio_btn.IsChecked = true;
+                text_animatation = "normal";
+
+                return " ("+ dialogueAnimation.data + ") ";
+            }
+            return "";
         }
 
         string set_style_italic()
