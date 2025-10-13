@@ -101,7 +101,7 @@
                     <StackPanel  Grid.Column="3" HorizontalAlignment="Center">
                         <RadioButton x:Name="normal_radio_btn" Margin="1,2,0,2" Content="Normal" IsChecked="True" Checked="normal_radio"/>
                         <RadioButton Margin="1,2,0,2" Content="Waving"  Checked="waving_radio"/>
-                        <RadioButton Margin="1,2,0,2" Content="Shocking"  Checked="shocking_radio"/>
+                        <RadioButton Margin="1,2,0,2" Content="shaking"  Checked="shaking_radio"/>
                         
                     </StackPanel>
                     

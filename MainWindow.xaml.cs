@@ -250,9 +250,9 @@ namespace DialogMaker
             text_animatation = "waving";
 
         }
-        private void shocking_radio(object sender, RoutedEventArgs e)
+        private void shaking_radio(object sender, RoutedEventArgs e)
         {
-            text_animatation = "shocking";
+            text_animatation = "shaking";
         }
         #endregion Radiobtn
 
@@ -624,7 +624,7 @@ namespace DialogMaker
                 Debug.WriteLine("start and end="+st + ":"+ end_s);   
                 string selction_TTEXT = tmp.Substring(text.SelectionStart, (text.SelectionLength ));
                 string message = "Selection Line :\n" + selction_TTEXT + "\n\nStyles :" + color_s + speed_s +
-                    bold_s + italic_s;
+                    bold_s + italic_s+ animation_s;
 
                 MessageBox.Show(message, Header);
             }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DialogMaker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5a79025b376e10bfc1f64bccc606ebbc7cbbb8f5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43d6bb38310d23e57d0b9a1763de233ea1adcacf")]
 [assembly: System.Reflection.AssemblyProductAttribute("DialogMaker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DialogMaker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
