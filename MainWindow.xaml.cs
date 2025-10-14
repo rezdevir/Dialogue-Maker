@@ -226,6 +226,11 @@ namespace DialogMaker
    
         }
 
+
+
+
+
+
         #region Radiobtn
         private void left_radio_Checked(object sender, RoutedEventArgs e)
         {
@@ -254,7 +259,54 @@ namespace DialogMaker
         {
             text_animatation = "shaking";
         }
+        private void big_radio(object sender, RoutedEventArgs e)
+        {
+            text_animatation = "bigger";
+        }
         #endregion Radiobtn
+
+
+
+
+
+        string the_size_w;
+        private void check_size_text_box(object sender, RoutedEventArgs e)
+        {
+          
+            //Debug.WriteLine(TextBox_Get_Size.Text);
+
+            if(CheckIntTextValidation(size_text.Text))
+            {
+                if(size_text.Text.Length <=3)
+
+                {
+                    Debug.WriteLine("HEREEE");
+
+                    e.Handled = true;
+                    the_size_w= size_text.Text;
+
+                }
+                else
+                {
+                    size_text.Text = the_size_w;
+                    e.Handled = false;
+                }
+               
+            }
+            else
+            {
+                size_text.Text= string.Empty;    
+                e.Handled= false;
+            }
+
+
+
+
+
+        }
+
+
+
 
 
 
@@ -608,6 +660,7 @@ namespace DialogMaker
 
             string color_s = set_style_color();
             string speed_s = set_style_text_speed();
+            string size_s = set_style_text_size();
             string bold_s = set_style_bold();
             string italic_s = set_style_italic();
             string animation_s = set_style_animation();
@@ -623,7 +676,7 @@ namespace DialogMaker
                 string tmp = text.Text;
                 Debug.WriteLine("start and end="+st + ":"+ end_s);   
                 string selction_TTEXT = tmp.Substring(text.SelectionStart, (text.SelectionLength ));
-                string message = "Selection Line :\n" + selction_TTEXT + "\n\nStyles :" + color_s + speed_s +
+                string message = "Selection Line :\n" + selction_TTEXT + "\n\nStyles :" + color_s + speed_s + size_s+
                     bold_s + italic_s+ animation_s;
 
                 MessageBox.Show(message, Header);
@@ -742,6 +795,32 @@ namespace DialogMaker
             }
             return "";
         }
+
+
+        string set_style_text_size()
+        {
+            if (!size_text.Text.Equals(""))
+            {
+
+                if (CheckIntTextValidation(size_text.Text))
+                {
+                    DStyle dialoguesize = new DStyle();
+                    dialoguesize.style_type = "size";
+                    dialoguesize.start = text.SelectionStart;
+                    dialoguesize.end = text.SelectionStart + (text.SelectionLength - 1);
+                    dialoguesize.data = size_text.Text;
+                    DialogueStyleModel objst = new DialogueStyleModel();
+                    objst.style = dialoguesize;
+                    dialogueStyles.Add(objst);
+                    size_text.Text = "";
+                    return " (Size Change to : " + dialoguesize.data + ") ";
+                }
+
+            }
+            return "";
+        }
+
+
         bool CheckSpeedTextValidation(string text)
         {
             try
@@ -756,7 +835,21 @@ namespace DialogMaker
                 return false;
             }
         }
+        bool CheckIntTextValidation(string text)
+        {
+            if (text.Equals("")) return true;
+            try
+            {
+                int.Parse(text);
 
+                return true;
+            }
+            catch
+            {
+                MessageBox.Show("Please insert number");
+                return false;
+            }
+        }
 
         private void Reset_Style_Click(object sender, RoutedEventArgs e)
         {
