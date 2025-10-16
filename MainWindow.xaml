@@ -30,12 +30,12 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock HorizontalAlignment="Center" Grid.Column="0" Text="Speaker"  Margin="10,0,10,0" ></TextBlock>
-                    <ComboBox Name="combo_speakers" Grid.Column="1" Margin="10,0,10,0"/>
+                    <ComboBox Name="combo_speakers" SelectionChanged="Combo_Value_Changed_Manager" Grid.Column="1" Margin="10,0,10,0"/>
                     <RadioButton Margin="10,4,10,0"  Name="left_radio" Grid.Column="2"  IsChecked="True"  Content="Left"   Checked="left_radio_Checked" >
 
 
                     </RadioButton>
-                    <RadioButton Margin="10,4,10,0"  Grid.Column="3" Content="Right"  Checked="right_radio_Checked"  ></RadioButton>
+                    <RadioButton Margin="10,4,10,0" Name="right_radio"  Grid.Column="3" Content="Right"  Checked="right_radio_Checked"  ></RadioButton>
                 </Grid>
                 <Grid HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>

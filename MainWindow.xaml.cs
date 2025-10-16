@@ -42,6 +42,8 @@ namespace DialogMaker
         string last_branch_combo;
         private const string FILE_PATH = "Dialogues";
         private const string FILE_PATH_PARA = "parameters";
+       
+        private string MainCharacter="";
         //object last_b_combo ;
         List<MultipleChoiceModel> choices_per_dialogue=new List<MultipleChoiceModel>();
         List<MultipleChoiceModel> inlistbox = new List<MultipleChoiceModel>();
@@ -68,7 +70,8 @@ namespace DialogMaker
                 foreach(var speaker in list) 
                     {
                     //list_speakers.Add(speaker);
-                    combo_speakers.Items.Add(speaker);  
+                    
+                    combo_speakers.Items.Add(SpeakersHandler(speaker));  
                     }
             }
             else
@@ -81,10 +84,38 @@ namespace DialogMaker
                 foreach (var emo in list)
                 {
                     //list_speakers.Add(speaker);
+
                     combo_emo.Items.Add(emo);
                 }
             }
             else {  }
+        }
+        private string SpeakersHandler(string speaker)
+        {
+            if (speaker.Contains("###"))
+            {
+                Debug.WriteLine("HEre ");
+                
+                speaker=speaker.Replace("###", "");
+                MainCharacter = speaker;
+            }
+               
+            
+            return speaker; 
+        }
+
+
+        private void Combo_Value_Changed_Manager(object sender, EventArgs e)
+
+        {
+            if (((string)combo_speakers.SelectedItem).Equals(MainCharacter))
+            {
+                left_radio.IsChecked = true;
+            }
+            else
+            {
+                right_radio.IsChecked = true;
+            }
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -291,17 +322,12 @@ namespace DialogMaker
                     size_text.Text = the_size_w;
                     e.Handled = false;
                 }
-               
             }
             else
             {
                 size_text.Text= string.Empty;    
                 e.Handled= false;
             }
-
-
-
-
 
         }
 
@@ -710,7 +736,6 @@ namespace DialogMaker
         {
             if ((bool)IsItalic_checkbox.IsChecked)
             {
-
                 DStyle dialogueItalic = new DStyle();
                 dialogueItalic.style_type = "italic";
                 dialogueItalic.start = text.SelectionStart;
@@ -728,7 +753,6 @@ namespace DialogMaker
         {
             if ((bool)IsBold_checkbox.IsChecked)
             {
-        
                     DStyle dialogueBold = new DStyle();
                      dialogueBold.style_type = "bold";
                      dialogueBold.start = text.SelectionStart;
