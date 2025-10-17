@@ -4,10 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogMaker" 
+        xmlns:component="clr-namespace:DialogMaker.Component" 
+        xmlns:vm="clr-namespace:DialogMaker.ViewModel" 
         mc:Ignorable="d"
+         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
         Title="Dialogue Maker V 0.1" Height="700" Width="620" Background="AliceBlue">
 
+    <Window.DataContext>
+        <vm:MainWindowViewModel></vm:MainWindowViewModel>
+        
+    </Window.DataContext>
 
     <StackPanel   VerticalAlignment="Center" Width="610" >
         <Border Margin="10,2,10,10" Width="550">
@@ -170,45 +177,75 @@
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <TextBlock  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">Choice Text</TextBlock>
-                    <TextBox Grid.Row="1" Grid.Column="0" MaxLength="12" HorizontalAlignment="Center" TextWrapping="Wrap" x:Name="choice_text" Width="200" Height="30"  Keyboard.KeyDown="ChoiceKeyDown_text"/>
+                    <TextBox Grid.Row="1" Grid.Column="0" MaxLength="60" FontSize="12" VerticalContentAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" x:Name="choice_text" Width="200" Height="40"  Keyboard.KeyDown="ChoiceKeyDown_text"/>
                     <TextBlock Grid.Row="0" Grid.Column="1"  HorizontalAlignment="Center">Choice Branch</TextBlock>
-                    <TextBox Grid.Row="1" Grid.Column="1" MaxLength="12" HorizontalAlignment="Center" TextWrapping="Wrap" x:Name="choice_branch" Width="200" Height="30" Keyboard.KeyDown="ChoiceKeyDown_branch"  />
+                    <TextBox Grid.Row="1" Grid.Column="1" MaxLength="12" FontSize="12"  VerticalContentAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" x:Name="choice_branch" Width="200" Height="40" Keyboard.KeyDown="ChoiceKeyDown_branch"  />
                 </Grid>
-                <ListBox  Name="ListBox_Chooices" Height="100" Margin="38,3">
 
-                </ListBox>
-                <Grid Margin="5,5,5,5">
-                    <Grid.ColumnDefinitions >
-                        <ColumnDefinition ></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
+               <!-- <ListBox  Name="ListBox_Chooices" Height="100" Margin="38,3"> </ListBox> -->
 
-                    <Button Margin="3,0,3,0" FontSize="14"  Name="prev_btn" Grid.Column="0"  Content="Previous line" Click="prev_btn_Click" />
-                    <Button Margin="3,0,3,0" FontSize="14"  Name="save_line_btn" Grid.Column="1"   Content="Save Line" Click="save_line_btn_Click" />
-                    <Button Margin="3,0,3,0" FontSize="14"  Name="delete_btn" Grid.Column="2"   Content="Delete this line"  Click="delete_btn_Click"  />
-                    <Button Margin="3,0,3,0" FontSize="14"  Name="next_line_btn" Grid.Column="3"  Content="Next line" Click="next_line_btn_Click" />
+                <ListView  Height="100" Margin="35,5,35,15" Width="480" ItemsSource="{Binding BranchesCollection}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate >
+                            <component:BranchComponent HorizontalAlignment="Center" Width="440" ></component:BranchComponent>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    
+                </ListView>
 
-                </Grid>
+            
+       
 
             </StackPanel>
        
         </Border>
+        <Border Margin="10,5,10,10" Width="550">
 
-        <Grid HorizontalAlignment="Center" Width="550" Margin="5,15,5,5" >
+            <Border.Effect>
+                <DropShadowEffect 
+     Color="Black"
+     Direction="270"
+     ShadowDepth="4"
+     Opacity="0.3"
+     BlurRadius="15"/>
+            </Border.Effect>
+
+            <Grid Margin="5,5,5,5">
+                <Grid.ColumnDefinitions >
+                    <ColumnDefinition Width="30" ></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                    <ColumnDefinition Width="30"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+               
+                <Button Margin="3,0,3,0" FontSize="14"  Name="save_line_btn" Grid.Column="1"   Content="Save Line" Click="save_line_btn_Click" />
+                <Button Margin="3,0,3,0" FontSize="14"  Name="delete_btn" Grid.Column="2"   Content="Delete this line"  Click="delete_btn_Click"  />
+
+
+                <Button Margin="3,0,3,0" FontSize="14"  Name="prev_btn" Grid.Column="0"  Content="◄" Click="prev_btn_Click" />
+                <Button Margin="3,0,3,0" FontSize="14"  Name="next_line_btn" Grid.Column="3"  Content="►" Click="next_line_btn_Click" />
+
+            </Grid>
+        </Border>
+        <Grid HorizontalAlignment="Center" Width="550" Margin="5,2,5,5" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition ></ColumnDefinition>
+                <ColumnDefinition ></ColumnDefinition> 
+                <ColumnDefinition Width="20"></ColumnDefinition>
+                
+           
             </Grid.ColumnDefinitions>
             <TextBox Name="name_file_textbox" Grid.Column="0" FontSize="12" Text="Dialogue_FileName" Margin="0,0,0,0"></TextBox>
             <Button Background="DarkCyan" BorderBrush="Green" Name="save_file_btn" Grid.Column="1" Content="Save File"  Click="save_file_btn_Click"  Margin="20,0,20,0"></Button>
             <Button Name="load_file_btn" Grid.Column="2" Content="load File"      Click="load_file_btn_Click"  Margin="20,0,20,0"></Button>
             <Button Grid.Column="3" Content="Open Folder"  Click="Open_Folder_Click"  Margin="20,0,20,0"></Button>
             <Button Grid.Column="4" Content="Parameters"  Click="Open_Folder_para_Click"  Margin="20,0,20,0"></Button>
+            <Button Grid.Column="5" BorderThickness="0" Background="Transparent"  Foreground="Red" Content="❤︎" Click="about_window"  ></Button>
+                
         </Grid>
     </StackPanel>
 </Window>

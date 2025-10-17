@@ -22,3 +22,8 @@ C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\DialogMaker.s
 C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\DialogMaker_Content.g.cs
 C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\Themes\LightTheme.baml
 C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\App.baml
+C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\Component\BranchComponent.g.cs
+C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\Component\BranchComponent.baml
+C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\AboutWindow.g.cs
+C:\Users\ReZa_PC\source\repos\DialogMaker\obj\Debug\net8.0-windows\AboutWindow.baml

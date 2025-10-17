@@ -1,4 +1,5 @@
 ﻿using DialogMaker.Model;
+using DialogMaker.ViewModel;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,23 +33,28 @@ namespace DialogMaker
 
     public partial class MainWindow : Window
     {
-        List<string> list_speakers = new List<string>();
-        List<string> list_emotion = new List<string>();
+        //List<string> list_speakers = new List<string>();
+        //List<string> list_emotion = new List<string>();
         string text_animatation="normal";
         List<DialogueStyleModel> dialogueStyles = new List<DialogueStyleModel>();
         int thisLine=1;
         bool isLeft;
-        string main_brach= "Main_Branch";
+        static string main_brach = "Main_Branch";
         string last_branch_combo;
         private const string FILE_PATH = "Dialogues";
         private const string FILE_PATH_PARA = "parameters";
        
         private string MainCharacter="";
         //object last_b_combo ;
-        List<MultipleChoiceModel> choices_per_dialogue=new List<MultipleChoiceModel>();
-        List<MultipleChoiceModel> inlistbox = new List<MultipleChoiceModel>();
+     
+        List<MultipleChoiceModel> dialogueChoiuces = new List<MultipleChoiceModel>();
+        //List<MultipleChoiceModel> choices_per_dialogue=new List<MultipleChoiceModel>();
+        //List<MultipleChoiceModel> inlistbox = new List<MultipleChoiceModel>();
+        //List<string> branch_id_list_tracker = new List<string>();
         List<List<MultipleChoiceModel>> choices_all=new List<List<MultipleChoiceModel>>();
+
         List<GameDialogue> dialogs=new List<GameDialogue>();
+
         public MainWindow()
         {
           
@@ -108,6 +114,7 @@ namespace DialogMaker
         private void Combo_Value_Changed_Manager(object sender, EventArgs e)
 
         {
+            if (combo_speakers.SelectedItem == null) return;
             if (((string)combo_speakers.SelectedItem).Equals(MainCharacter))
             {
                 left_radio.IsChecked = true;
@@ -136,6 +143,7 @@ namespace DialogMaker
                         else
                         {
                             thisLine++;
+                            prev_btn.IsEnabled = true;
                             load_line(thisLine);
                         }
                      
@@ -164,40 +172,40 @@ namespace DialogMaker
                 dialog.branch_id = (string)combo_branch.SelectedValue;
                 dialog.action_name = action_textbox.Text;
 
-                last_branch_combo = dialog.branch_id;
+                //last_branch_combo = dialog.branch_id;
            
 
 
-                       Debug.WriteLine("Line Saved");
+                Debug.WriteLine("Line Saved");
                 text.Text = "";
                 action_textbox.Text = "";
-
-
-
-
-                        Debug.WriteLine("here ***********");
-   
-                  
-                        if (inlistbox.Count > 0)
-                {
-                    choices_per_dialogue.AddRange(inlistbox);
-  
-                }
-
-
+        
                         dialog.styles = new List<DialogueStyleModel>(dialogueStyles);
-                        dialog.multiple_choice = new List<MultipleChoiceModel>(choices_per_dialogue); 
-                      
-
+                        dialog.multiple_choice = new List<MultipleChoiceModel>(dialogueChoiuces);
                         add_to_list(dialog, thisLine);
-                        choices_per_dialogue = new List<MultipleChoiceModel>();
+                        dialogueChoiuces.Clear();
+                        dialogueChoiuces = new List<MultipleChoiceModel>();
+              
+            
+                        
+                        
                         dialogueStyles = new List<DialogueStyleModel>();
 
-                        //Clear UI
-                        ListBox_Chooices.Items.Clear();
-                        CheckForBranchs();
-                        //dialog = choice;
-                        return true;
+                //Clear UI
+                //ListBox_Chooices.Items.Clear();
+
+                #region checkforbranch
+
+                //CheckForBranchs();
+
+               
+                BranchManager(thisLine);
+                if (dialog.multiple_choice.Count == 0)
+                    combo_branch.SelectedItem = dialog.branch_id;
+                DeleteListViewBranch(); 
+                #endregion checkforbranch
+                //dialog = choice;
+                return true;
        
                 
             }
@@ -331,27 +339,6 @@ namespace DialogMaker
 
         }
 
-
-
-
-
-
-
-        private void prev_btn_Click(object sender, RoutedEventArgs e)
-        {
-            if (thisLine != 1)
-            {
-
-
-                load_line(thisLine - 1);
-                thisLine--;
-                CheckForBranchs();
-            }
-            else
-            {
-                //MessageBox.Show("there is no previous line");
-            }
-        }
         private void load_line(int line)
         {
             int iterator=1;
@@ -365,12 +352,8 @@ namespace DialogMaker
                     }
                     iterator++;
                 }
-            
-     
-           
   
         }
-
         private void Set_UI(GameDialogue dialog,int line_)
         {
            
@@ -390,35 +373,12 @@ namespace DialogMaker
                 n_chars.Text = "Number of Characters " + 0.ToString() + "//150";
             }
 
-            if (dialog.multiple_choice.Count == 0)
-            { ListBox_Chooices.Items.Clear(); }
-            else
-            {
-                inlistbox.Clear();
-                foreach (var ch in dialog.multiple_choice)
-                {
-                    add_to_listbox_choice(ch);
-                    inlistbox.Add(ch);
-                }
-            }
-            last_branch_combo = dialog.branch_id;
-            CheckForBranchs();
-        }
-        private void next_line_btn_Click(object sender, RoutedEventArgs e)
-        {
-            if(thisLine-1 != dialogs.Count) 
-                {
-                
-            load_line(thisLine+1);
-            thisLine++;
-                CheckForBranchs();
-            }
-            else
-            {
-                thisLine=dialogs.Count + 1;
+            
+            BranchManager(line_);
+            combo_branch.SelectedItem = dialog.branch_id;
+            AddChoicesToListView(dialog.multiple_choice);
+            //CheckForBranchs();
 
-                Set_UI(new GameDialogue(), thisLine);
-            }
         }
 
         private void save_line_btn_Click(object sender, RoutedEventArgs e)
@@ -442,14 +402,13 @@ namespace DialogMaker
                     Debug.WriteLine(thisLine);
                     Debug.WriteLine(dialogs.Count);
                     dialogs.RemoveAt(thisLine - 1);
+                  
                     Set_UI(new GameDialogue(), thisLine);
+
                     load_line(thisLine);
                 }
             }
         }
-
-
-
         private void save_file_btn_Click(object sender, RoutedEventArgs e)
         {
             if(save())
@@ -461,7 +420,6 @@ namespace DialogMaker
              
             }
         }
-
         private void load_file_btn_Click(object sender, RoutedEventArgs e)
         {
 
@@ -495,191 +453,6 @@ namespace DialogMaker
             }
                 
         }
-
-
-        private void ChoiceKeyDown_branch(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Enter)
-            {
-
-                if (choice_text.Text != "")
-                {
-                    if(choice_branch.Text=="")
-                    {
-
-                        choice_branch.Text = Make_Name(thisLine, choices_per_dialogue.Count + 1);
-                    }
-                    if (!SaveChoice(choice_text.Text, choice_branch.Text))
-                    {
-                        MessageBox.Show("Branch name is unique ");
-                    }
-                    else { 
-                    }
-                }
-            }
-        }
-
-        private void ChoiceKeyDown_text(object sender, KeyEventArgs e)
-        {
-
-            if (e.Key == Key.Enter) { 
-            
-                if(choice_text.Text !="" )
-                {
-                    if (choice_branch.Text != "")
-                    {
-                        // save
-                    }
-                    else
-                    {
-                        // It has be unique 
-                        choice_branch.Text = Make_Name(thisLine, choices_per_dialogue.Count + 1);
-                        //choice_branch.Text = thisLine.ToString() + "_" + "B" + (choices_per_dialogue.Count + 1).ToString ()+ ":";
-                    }
-                  if(  !SaveChoice(choice_text.Text, choice_branch.Text))
-                    {
-                        MessageBox.Show("Branch name is unique ");
-                    }
-                }
-                else
-                {
-                 
-                }
-            
-            }
-
-        }
-
-        private string Make_Name(int lineNumber,int i)
-        {
-            string ln = lineNumber.ToString();
-            string i_n = i.ToString();
-            string b_name = "branch_" + ln + "_"+ i_n;
-
-
-            return b_name;
-        }
-        private bool SaveChoice(string text,string branch)
-        {
-            //ShowListTome();
-            foreach (var ch in choices_all)
-            {
-                foreach (var item in ch)
-                {
-                    if (item.branch_name .Equals(branch))
-                    {
-                        return false;
-                    }
-                }
-            }
-            
-            MultipleChoiceModel choice=new MultipleChoiceModel();
-            choice.choice_head = text;
-            choice.branch_name = branch;
-
-            choices_per_dialogue.Add(choice);
-
-            add_to_listbox_choice(choice);
-            choices_all.Add(choices_per_dialogue);
-            choice_branch.Text = "";
-            choice_text.Text = "";
-            return true;
-        }
-        void CheckForBranchs()
-        {
-            combo_branch.SelectedItem = null;
-            combo_branch.Items.Clear();
-            List<string> branch_lists = new List<string>();
-            List<GameDialogue> prev_dialog = new List<GameDialogue>();
-        
-
-
-
-            for (int i = 0; i < thisLine - 1; i++)
-            {
-                prev_dialog.Add(dialogs[i]);
-             
-                if (dialogs[i].multiple_choice.Count != 0)
-                {
-
-                    foreach (var ch in dialogs[i].multiple_choice)
-                    {
-                        branch_lists.Add(ch.branch_name);
-                    }
-
-                }
-
-            }
-
-            branch_lists = del_branch_starter(branch_lists, prev_dialog);
-
-            foreach (var ch in branch_lists)
-            {
-                combo_branch.Items.Add(ch);
-            }
-
-            bool is_in = false;
-            if (last_branch_combo!=null)
-            if (last_branch_combo.Equals(main_brach)&& branch_lists.Count==0)
-            {
-                combo_branch.Items.Add(last_branch_combo);
-                combo_branch.SelectedItem = main_brach;
-
-            }
-            else
-            {
- 
-                    foreach (var ch in branch_lists)
-                    {
-                        Debug.WriteLine(ch);
-
-                        if (last_branch_combo.Equals(ch))
-                        {
-                            is_in = true;
-                        break;
-                        }
-
-                    }
-              
-                    if (is_in)
-                    {
-                        combo_branch.SelectedValue = last_branch_combo;
-                    }
-                    else
-                    {
-                        combo_branch.SelectedValue = null;
-
-                    }
-            }
-        }
-
-
-
-
-        private List<string> del_branch_starter(List<string> branchs,List<GameDialogue> prevD)
-        {
-            List<string> branch_starter=new List<string>();
-            foreach (var ch in prevD)
-            {
-                if(ch.multiple_choice.Count!=0)
-                {
-                    branch_starter.Add(ch.branch_id);
-                }
-            }
-
-            foreach(var ch in branch_starter)
-            {
-                branchs.Remove(ch);
-            }
-            return branchs;
-        }
-
-
-        void add_to_listbox_choice(MultipleChoiceModel choice)
-        {
-            ListBox_Chooices.Items.Add(choice.choice_head + "  |  " + choice.branch_name);
-        }
-
         private void set_style(object sender, RoutedEventArgs e)
         {
             
@@ -709,7 +482,6 @@ namespace DialogMaker
             }
 
         }
-
         string set_style_animation()
         {
             if (!text_animatation.Equals("normal"))
@@ -731,7 +503,6 @@ namespace DialogMaker
             }
             return "";
         }
-
         string set_style_italic()
         {
             if ((bool)IsItalic_checkbox.IsChecked)
@@ -819,8 +590,6 @@ namespace DialogMaker
             }
             return "";
         }
-
-
         string set_style_text_size()
         {
             if (!size_text.Text.Equals(""))
@@ -889,6 +658,352 @@ namespace DialogMaker
         {
             var path = FILE_PATH_PARA;
             Process.Start("explorer.exe",path);
+        }
+
+        void add_to_ListView_choice(MultipleChoiceModel choice)
+        {
+            //ListBox_Chooices.Items.Add(choice.choice_head + "  |  " + choice.branch_name);
+            BranchComponentModel BCM = new BranchComponentModel { BranchID = choice.branch_name, BranchName = choice.choice_head };
+            BranchComponentViewModel BCVM = new BranchComponentViewModel();
+            BCVM.BranchComponentBindig = BCM;
+            MainWindowViewModel.Instance.BranchesCollection.Add(BCVM);
+            // Save To Multi Choice
+        }
+
+
+
+
+
+        private void next_line_btn_Click(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine("this line:"+thisLine);
+            if (thisLine - 1 != dialogs.Count)
+            {
+
+                load_line(thisLine + 1);
+                thisLine++;
+                //CheckForBranchs();
+                prev_btn.IsEnabled = true;
+            }
+            else
+            {
+
+                //if (thisLine+1 == dialogs.Count)
+                //    OpenEmptyUI();
+                ////thisLine = dialogs.Count + 1;
+
+                next_line_btn.IsEnabled = false;
+            }
+        }
+
+        void OpenEmptyUI()
+        {
+           thisLine++;
+           Set_UI(null, thisLine);
+        }
+            
+
+        private void prev_btn_Click(object sender, RoutedEventArgs e)
+        {
+            if (thisLine != 1)
+            {
+
+
+                load_line(thisLine - 1);
+                thisLine--;
+                next_line_btn.IsEnabled = true;
+                //CheckForBranchs();
+            }
+            else
+            {
+                prev_btn.IsEnabled = false;
+                //MessageBox.Show("there is no previous line");
+            }
+        }
+
+
+
+        //private List<string> del_branch_starter(List<string> branchs, List<GameDialogue> prevD)
+        //{
+        //    List<string> branch_starter = new List<string>();
+        //    foreach (var ch in prevD)
+        //    {
+        //        if (ch.multiple_choice.Count != 0)
+        //        {
+        //            branch_starter.Add(ch.branch_id);
+        //        }
+        //    }
+
+        //    foreach (var ch in branch_starter)
+        //    {
+        //        branchs.Remove(ch);
+        //    }
+        //    return branchs;
+        //}
+
+
+  
+
+
+        private void ChoiceKeyDown_branch(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+
+                if (choice_text.Text != "")
+                {
+                    if (choice_branch.Text == "")
+                    {
+
+                        choice_branch.Text = Make_Name(thisLine, dialogueChoiuces.Count + 1);
+                    }
+                    if (!SaveChoice(choice_text.Text, choice_branch.Text))
+                    {
+                        MessageBox.Show("Branch name is unique ");
+                    }
+                    else
+                    {
+                    }
+                }
+            }
+        }
+
+
+
+        private void ChoiceKeyDown_text(object sender, KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Enter)
+            {
+
+                if (choice_text.Text != "")
+                {
+                    if (choice_branch.Text != "")
+                    {
+                        // save
+                    }
+                    else
+                    {
+                        // It has be unique 
+                        choice_branch.Text = Make_Name(thisLine, dialogueChoiuces.Count + 1);
+                     
+                    }
+                    if (!SaveChoice(choice_text.Text, choice_branch.Text))
+                    {
+                        MessageBox.Show("Branch name is unique ");
+                    }
+                }
+                else
+                {
+
+                }
+
+            }
+
+        }
+
+
+
+        private string Make_Name(int lineNumber, int i)
+        {
+            string ln = lineNumber.ToString();
+            string i_n = i.ToString();
+            string b_name = "branch_" + ln + "_" + i_n;
+            return b_name;
+        }
+
+
+        private bool SaveChoice(string text, string branch)
+        {
+            //ShowListTome();
+            foreach (var ch in choices_all)
+            {
+                foreach (var item in ch)
+                {
+                    if (item.branch_name.Equals(branch))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            MultipleChoiceModel choice = new MultipleChoiceModel();
+            choice.choice_head = text;
+            choice.branch_name = branch;
+            dialogueChoiuces.Add(choice);
+            add_to_ListView_choice(choice);
+            choices_all.Add(dialogueChoiuces);
+            choice_branch.Text = "";
+            choice_text.Text = "";
+            return true;
+        }
+
+        //void CheckForBranchs()
+        //{
+        //    combo_branch.SelectedItem = null;
+        //    combo_branch.Items.Clear();
+        //    List<string> branch_lists = new List<string>();
+        //    List<GameDialogue> prev_dialog = new List<GameDialogue>();
+
+
+
+
+        //    for (int i = 0; i < thisLine - 1; i++)
+        //    {
+        //        prev_dialog.Add(dialogs[i]);
+
+        //        if (dialogs[i].multiple_choice.Count != 0)
+        //        {
+
+        //            foreach (var ch in dialogs[i].multiple_choice)
+        //            {
+        //                branch_lists.Add(ch.branch_name);
+        //            }
+
+        //        }
+
+        //    }
+
+        //    branch_lists = del_branch_starter(branch_lists, prev_dialog);
+
+        //    foreach (var ch in branch_lists)
+        //    {
+        //        combo_branch.Items.Add(ch);
+        //    }
+
+        //    bool is_in = false;
+        //    if (last_branch_combo != null)
+        //        if (last_branch_combo.Equals(main_brach) && branch_lists.Count == 0)
+        //        {
+        //            combo_branch.Items.Add(last_branch_combo);
+        //            combo_branch.SelectedItem = main_brach;
+
+        //        }
+        //        else
+        //        {
+
+        //            foreach (var ch in branch_lists)
+        //            {
+        //                Debug.WriteLine(ch);
+
+        //                if (last_branch_combo.Equals(ch))
+        //                {
+        //                    is_in = true;
+        //                    break;
+        //                }
+
+        //            }
+
+        //            if (is_in)
+        //            {
+        //                combo_branch.SelectedValue = last_branch_combo;
+        //            }
+        //            else
+        //            {
+        //                combo_branch.SelectedValue = null;
+
+        //            }
+        //        }
+        //}
+          
+        
+
+        void DeleteListViewBranch()
+        {
+            
+            MainWindowViewModel.Instance.BranchesCollection.Clear();
+        }
+
+        void AddChoicesToListView(List<MultipleChoiceModel> choices)
+        {
+            DeleteListViewBranch();
+            foreach (var choice in choices)
+            {
+                add_to_ListView_choice((MultipleChoiceModel)choice);
+               
+            }
+        }
+
+        void BranchListViewManager()
+        {
+
+        }
+   
+        void BranchManager(int line)
+        {
+            // Branch Added to list 
+            // So now i want to delete the Current Branch
+            var branches= combo_branch.Items;
+            List<string> list_branches = new List<string>();
+            combo_branch.SelectedItem = null;
+            combo_branch.Items.Clear();
+            Debug.WriteLine(line);
+            list_branches=Get_Previous_Branches(line);
+            foreach (var b in list_branches)
+                combo_branch.Items.Add(b);
+            
+        }
+
+
+        List<string> Get_Previous_Branches(int line)
+        {
+            List<string> list_branches= new List<string>{ main_brach };
+          
+            for (int i=0;i<line-1;i++)
+            {
+                if(dialogs[i].multiple_choice.Count>0)
+                {
+                    string b_tmp="";
+                    List<string> list_branches_tmp = new List<string>();
+                    //We Have Branch in this line 
+                    foreach (var b in list_branches)
+                    {
+                        if (b.Equals(dialogs[i].branch_id))
+                        {
+                            //Remove the branch and add new ones 
+                            //list_branches.Remove(b);
+                            b_tmp = b;
+                            foreach (var mc in dialogs[i].multiple_choice)
+                            {
+                                list_branches_tmp.Add(mc.branch_name);
+                            }
+
+                        }
+                    }
+                    int index = -1;
+                    for(int j=0;j< list_branches.Count;j++)
+                    {
+                        if (list_branches[j].Equals(b_tmp))
+                            index = j;
+                    }
+                    list_branches.RemoveAt(index);
+                    list_branches.InsertRange(index, list_branches_tmp);
+                }
+            }
+
+
+            foreach(var t in list_branches)
+                Debug.WriteLine(t);
+            return list_branches;   
+        }
+
+
+
+        AboutWindow win_about = new AboutWindow();
+
+        private void about_window(object sender, RoutedEventArgs e)
+        {
+
+            //AboutWindow.Instance.Show();
+             //win_about = new AboutWindow();
+            if(!win_about.IsLoaded)
+                 win_about = new AboutWindow();
+
+                win_about.Show();
+
+           
+
+
         }
     }
 }
