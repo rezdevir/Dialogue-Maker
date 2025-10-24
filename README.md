@@ -7,7 +7,7 @@ This Windows application (built with **WPF**) allows non-programmers — especia
 
 ## 🧩 Overview
 
-<img src="docs/pics/app.png" width="300" />
+<img src="docs/pics/app.png" width="500" />
 
 This tool lets writers define:
 - **Characters (Speakers)**
