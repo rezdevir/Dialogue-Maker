@@ -30,7 +30,9 @@ List of all speakers in your story.
 Use the following format:
 
 clay
+
 floy
+
 rez ###
 
 
@@ -41,8 +43,11 @@ rez ###
 Define emotional states your characters can express:
 
 nothing
+
 happy
+
 confuse
+
 sad
 
 
