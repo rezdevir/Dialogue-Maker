@@ -13,4 +13,8 @@
     <Content Include="dialogue.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logic\" />
+  </ItemGroup>
+
 </Project>

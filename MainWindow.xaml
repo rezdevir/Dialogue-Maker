@@ -4,114 +4,248 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DialogMaker" 
+        xmlns:component="clr-namespace:DialogMaker.Component" 
+        xmlns:vm="clr-namespace:DialogMaker.ViewModel" 
         mc:Ignorable="d"
+         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
-        Title="Dialogue Maker V0.1" Height="730" Width="550">
-    <StackPanel Height="704" VerticalAlignment="Top">
-        <Grid Margin="0,20,0,20" RenderTransformOrigin="0.64,0.412">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*"></ColumnDefinition>
-                <ColumnDefinition Width="38*"></ColumnDefinition>
-                <ColumnDefinition Width="12*"></ColumnDefinition>
-                <ColumnDefinition Width="25*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <TextBlock HorizontalAlignment="Left" Grid.Column="0" Text="Speaker" Margin="73,-1,0,1" Width="42" ></TextBlock>
-            <ComboBox Name="combo_speakers" Grid.Column="1" Margin="67,-1,6,1"/>
-            <RadioButton Name="left_radio" Grid.Column="2"  IsChecked="True" Content="Left"  Grid.ColumnSpan="2" Margin="37,0,25,0" Checked="left_radio_Checked" ></RadioButton>
-            <RadioButton Grid.Column="3" Content="Right" Margin="45,0,-45,0" Checked="RadioButton_Checked" ></RadioButton>
-        </Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Emotions "></TextBlock>
-            <ComboBox Grid.Column="0" Name="combo_emo" Margin="0,0,0,10" Width="117"/>
-            <TextBlock Grid.Column="1" Text="Branch "></TextBlock>
-            <ComboBox Grid.Column="1" Name="combo_branch" Margin="0,0,0,10" Width="117"/>
-        </Grid>
+        Title="Unity Dialogue Maker V0.1" Height="710" Width="620" Background="AliceBlue">
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <TextBlock Name="n_lines"  TextAlignment="Center" Text="Line: 1"></TextBlock>
-            <TextBlock Name="n_chars" Grid.Column="1" TextAlignment="Center" Text="Number of Characters 0/150"></TextBlock>
-        </Grid>
-        <TextBox TextWrapping="Wrap" x:Name="text" Height="224" Width="396" Keyboard.KeyDown="TextBox_KeyDown" />
+    <Window.DataContext>
+        <vm:MainWindowViewModel></vm:MainWindowViewModel>
+        
+    </Window.DataContext>
 
-        <Grid>
+    <StackPanel   VerticalAlignment="Center" Width="610" >
+        <Border Margin="10,2,10,10" Width="550">
+            <Border.Effect>
+                <DropShadowEffect 
+            Color="Black"
+            Direction="270"
+            ShadowDepth="4"
+            Opacity="0.3"
+            BlurRadius="15"/>
+            </Border.Effect>
+
+            <StackPanel >
+                <Grid Margin="0,20,0,20" HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition ></ColumnDefinition>
+                        <ColumnDefinition Width="150"></ColumnDefinition>
+                        <ColumnDefinition Width="65" ></ColumnDefinition>
+                        <ColumnDefinition Width="70" ></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock HorizontalAlignment="Center" Grid.Column="0" Text="Speaker"  Margin="10,0,10,0" ></TextBlock>
+                    <ComboBox Name="combo_speakers" SelectionChanged="Combo_Value_Changed_Manager" Grid.Column="1" Margin="10,0,10,0"/>
+                    <RadioButton Margin="10,4,10,0"  Name="left_radio" Grid.Column="2"  IsChecked="True"  Content="Left"   Checked="left_radio_Checked" >
+
+
+                    </RadioButton>
+                    <RadioButton Margin="10,4,10,0" Name="right_radio"  Grid.Column="3" Content="Right"  Checked="right_radio_Checked"  ></RadioButton>
+                </Grid>
+                <Grid HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"></ColumnDefinition>
+                        <ColumnDefinition Width="250"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Emotions "></TextBlock>
+                    <ComboBox Grid.Column="0" Name="combo_emo" Margin="0,0,0,10" Width="117" />
+                    <TextBlock Grid.Column="1" Text="Branch "></TextBlock>
+                    <ComboBox Grid.Column="1" FontWeight="ExtraBold" Name="combo_branch" Margin="0,0,0,10" Width="117"/>
+                </Grid>
+
+                <Grid Width="500">
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Name="n_lines" FontWeight="ExtraBlack" FontSize="15" TextAlignment="left" Text="Line: 1"  Margin="50,8,105,0"></TextBlock>
+                    <TextBlock Name="n_chars" TextAlignment="Center" Opacity="0.9" Foreground="Gray" Text="Number of Characters 0/150" Margin="235,8,0,0" Grid.ColumnSpan="2"/>
+                </Grid>
+
+
+
+                <TextBox TextWrapping="Wrap" x:Name="text" Height="90" Width="396" Keyboard.KeyDown="TextBox_KeyDown" MaxLength="150" Background="WhiteSmoke"/>
+
+
+
+                <Grid Width="500">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition Width="60"></ColumnDefinition>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                        <ColumnDefinition Width="90"></ColumnDefinition>
+                        <ColumnDefinition Width="80"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0" Margin="0,0,5,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock  Grid.Column="0" VerticalAlignment="Center" Text="Color" ></TextBlock>
+                        <TextBox Grid.Column="1" VerticalAlignment="Center"  Name="color_text"  FontSize="10"  ></TextBox>
+                    </Grid>
+
+
+
+                    <Grid Grid.Column="1" Margin="0,0,5,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="34"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Speed"  VerticalAlignment="Center"></TextBlock>
+                        <TextBox Name="speed_text" Grid.Column="1"  FontSize="10" VerticalAlignment="Center"></TextBox>
+
+                    </Grid>
+
+                    <StackPanel Grid.Column="2" >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="16"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock FontSize="9" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="0" >Size</TextBlock>
+                            <TextBox x:Name="size_text" Text="12" FontSize="9" TextChanged="check_size_text_box" Height="20" Width="30"  Grid.Column="1" HorizontalAlignment="Center"></TextBox>
+
+                        </Grid>     
+                        <CheckBox Name="IsBold_checkbox" IsChecked="False" Content="bold" FontWeight="ExtraBold"  HorizontalAlignment="Left" ></CheckBox>
+                        <CheckBox Margin="0,5,0,5" Name="IsItalic_checkbox" IsChecked="False"  Content="Italic" FontStyle="Italic" HorizontalAlignment="Left"  ></CheckBox>
+
+                    </StackPanel>
+
+                    <StackPanel  Margin="0,0,0,0" Grid.Column="3" HorizontalAlignment="Center">
+                        <RadioButton x:Name="normal_radio_btn" Margin="1,2,0,2" Content="Normal" IsChecked="True" Checked="normal_radio"/>
+                        <RadioButton Margin="1,2,0,2" Content="Waving"  Checked="waving_radio"/>
+                        <RadioButton Margin="1,2,0,2" Content="shaking"  Checked="shaking_radio"/>
+                       
+                        
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Column="4">
+                        <Button Content="Set Style" Margin="0,6,0,5" FontWeight="Bold"   Click="set_style"/>
+                        <Button  Content="Reset"  Click="Reset_Style_Click"  Background="LightGray" Foreground="Black" BorderThickness="0.3" />
+                    </StackPanel>
+
+
+                </Grid>
+            </StackPanel>
+
+        </Border>
+
+
+
+
+
+
+        <Border Margin="10,5,10,10" Width="550">
+
+            <Border.Effect>
+                <DropShadowEffect 
+            Color="Black"
+            Direction="270"
+            ShadowDepth="4"
+            Opacity="0.3"
+            BlurRadius="15"/>
+            </Border.Effect>
+
+            <StackPanel >
+                <Label Margin="0,2,0,10" FontWeight="Bold"  HorizontalContentAlignment="Center" Content="Action and Branch Center"></Label>
+                <Grid HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+
+                    <Label  Grid.Column="0" Content="Action" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" />
+                    <TextBox  Grid.Column="1"  Width="100" Name="action_textbox"  MaxLength="12"  ></TextBox>
+
+                </Grid>
+
+                <Grid Margin="0,10,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBlock  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">Choice Text</TextBlock>
+                    <TextBox Grid.Row="1" Grid.Column="0" MaxLength="60" FontSize="12" VerticalContentAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" x:Name="choice_text" Width="200" Height="40"  Keyboard.KeyDown="ChoiceKeyDown_text"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1"  HorizontalAlignment="Center">Choice Branch</TextBlock>
+                    <TextBox Grid.Row="1" Grid.Column="1" MaxLength="12" FontSize="12"  VerticalContentAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap" x:Name="choice_branch" Width="200" Height="40" Keyboard.KeyDown="ChoiceKeyDown_branch"  />
+                </Grid>
+
+               <!-- <ListBox  Name="ListBox_Chooices" Height="100" Margin="38,3"> </ListBox> -->
+
+                <ListView  Height="100" Margin="35,5,35,15" Width="480" ItemsSource="{Binding BranchesCollection}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate >
+                            <component:BranchComponent HorizontalAlignment="Center" Width="440" ></component:BranchComponent>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    
+                </ListView>
+
+            
+       
+
+            </StackPanel>
+       
+        </Border>
+        <Border Margin="10,5,10,10" Width="550">
+
+            <Border.Effect>
+                <DropShadowEffect 
+     Color="Black"
+     Direction="270"
+     ShadowDepth="4"
+     Opacity="0.3"
+     BlurRadius="15"/>
+            </Border.Effect>
+
+            <Grid Margin="5,5,5,5">
+                <Grid.ColumnDefinitions >
+                    <ColumnDefinition Width="30" ></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition ></ColumnDefinition>
+                    <ColumnDefinition Width="30"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+               
+                <Button Margin="3,0,3,0" FontSize="14"  Name="save_line_btn" Grid.Column="1"   Content="Save Line" Click="save_line_btn_Click" />
+                <Button Margin="3,0,3,0" FontSize="14"  Name="delete_btn" Grid.Column="2"   Content="Delete this line"  Click="delete_btn_Click"  />
+
+
+                <Button Margin="3,0,3,0" FontSize="14"  Name="prev_btn" Grid.Column="0"  Content="◄" Click="prev_btn_Click" />
+                <Button Margin="3,0,3,0" FontSize="14"  Name="next_line_btn" Grid.Column="3"  Content="►" Click="next_line_btn_Click" />
+
+            </Grid>
+        </Border>
+        <Grid HorizontalAlignment="Center" Width="550" Margin="5,2,5,5" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition ></ColumnDefinition>
+                <ColumnDefinition ></ColumnDefinition> 
+                <ColumnDefinition Width="20"></ColumnDefinition>
                 
+           
             </Grid.ColumnDefinitions>
-            <Button Content="Set Style" Grid.Column="3" Margin="0,10,60,10" Height="20" Width="50" Click="set_style"></Button>
-            <TextBlock Grid.Column="0" Margin="1,10,0,10" Text="color"></TextBlock>
-            <TextBox  Name="color_text" Grid.Column="0" Margin="0,10,5,10" Height="20" Width="90" HorizontalAlignment="Right" ></TextBox>
-            <TextBlock Grid.Column="1" Margin="1,10,0,10" Text="speed"></TextBlock>
-            <TextBox Name="speed_text" Grid.Column="1" Margin="0,10,5,10" Height="20" Width="90" HorizontalAlignment="Right" ></TextBox>
-            <Button Grid.Column="3" Content="Reset" Margin="0,10,-70,10" Height="20" Width="50" Click="Reset_Style_Click" ></Button>
-            <CheckBox Name="IsBold_checkbox" IsChecked="False" Content="bold" Grid.Column="2" Margin="0,5,0,10" ></CheckBox>
-            <CheckBox Name="IsItalic_checkbox" IsChecked="False"  Content="italic" Grid.Column="2" Margin="0,25,0,10"></CheckBox>
-        </Grid>
-
-        <Label Margin="0,10,0,0"  HorizontalContentAlignment="Center" Content="Please Explain all of your actions in Readme, and follow action format"></Label>
-        <Grid >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
-
-            <Label  Grid.Column="0" Content="Action" HorizontalContentAlignment="Right" Margin="0,0,40,0" />
-            <TextBox  Grid.Column="1" Margin="0,0,95,0"  Name="action_textbox"></TextBox>
-
-        </Grid>
-        <Grid Margin="0,15,0,5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
-            <TextBlock  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">Choice Text</TextBlock>
-            <TextBox Grid.Row="1" Grid.Column="0"  HorizontalAlignment="Center" TextWrapping="Wrap" x:Name="choice_text" Width="200" Height="22"  Keyboard.KeyDown="ChoiceKeyDown_text"/>
-            <TextBlock Grid.Row="0" Grid.Column="1"  HorizontalAlignment="Center">Choice Branch</TextBlock>
-            <TextBox Grid.Row="1" Grid.Column="1"  HorizontalAlignment="Center" TextWrapping="Wrap" x:Name="choice_branch" Width="200" Height="20" Keyboard.KeyDown="ChoiceKeyDown_branch"  />
-        </Grid>
-        <ListBox  Name="ListBox_Chooices" Height="100" Margin="38,3">
-
-        </ListBox>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Button Name="prev_btn" Grid.Column="0" Margin="38,20,10,20" Content="Previous line" Click="prev_btn_Click" />
-            <Button Name="save_line_btn" Grid.Column="1"  Margin="0,20,0,20" Content="Save Line" Width="70" Click="save_line_btn_Click" />
-            <Button Name="delete_btn" Grid.Column="2"  Margin="0,20,0,20" Content="Delete this" Width="70" Click="delete_btn_Click"  />
-            <Button Name="next_line_btn" Grid.Column="3" Margin="10,20,37,20" Content="Next line" Click="next_line_btn_Click" />
-
-        </Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <TextBox Name="name_file_textbox" Grid.Column="0" Text="Dialogue_FileName" ></TextBox>
-            <Button Background="DarkCyan" BorderBrush="Green" Name="save_file_btn" Grid.Column="1" Content="Save File" Width="70" Click="save_file_btn_Click"  ></Button>
-            <Button Name="load_file_btn" Grid.Column="1" Content="load File"   Grid.ColumnSpan="2" Margin="30,0,0,0" Width="70" Click="load_file_btn_Click" ></Button>
-            <Button Grid.Column="3" Content="Open Folder" Width="70" Click="Open_Folder_Click"></Button>
+            <TextBox Name="name_file_textbox" Grid.Column="0" FontSize="12" Text="Dialogue_FileName" Margin="0,0,0,0"></TextBox>
+            <Button Background="DarkCyan" BorderBrush="Green" Name="save_file_btn" Grid.Column="1" Content="Save File"  Click="save_file_btn_Click"  Margin="20,0,20,0"></Button>
+            <Button Name="load_file_btn" Grid.Column="2" Content="load File"      Click="load_file_btn_Click"  Margin="20,0,20,0"></Button>
+            <Button Grid.Column="3" Content="Open Folder"  Click="Open_Folder_Click"  Margin="20,0,20,0"></Button>
+            <Button Grid.Column="4" Content="Parameters"  Click="Open_Folder_para_Click"  Margin="20,0,20,0"></Button>
+            <Button Grid.Column="5" BorderThickness="0" Background="Transparent"  Foreground="Red" Content="❤︎" Click="about_window"  ></Button>
+                
         </Grid>
     </StackPanel>
 </Window>
