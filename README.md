@@ -6,7 +6,7 @@ This Windows application (built with **WPF**) allows non-programmers — especia
 ---
 
 ## 🧩 Overview
-![Shake Animation Example](docs/pics/app.png)
+![App](docs/pics/app.png |width=100)
 This tool lets writers define:
 - **Characters (Speakers)**
 - **Emotions**
