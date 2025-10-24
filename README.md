@@ -6,7 +6,7 @@ This Windows application (built with **WPF**) allows non-programmers — especia
 ---
 
 ## 🧩 Overview
-![App](docs/pics/app.png | width=100)
+![App](docs/pics/app.png){:height="36px" width="36px"}
 This tool lets writers define:
 - **Characters (Speakers)**
 - **Emotions**
