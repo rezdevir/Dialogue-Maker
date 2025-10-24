@@ -21,7 +21,7 @@
             <TextBlock Grid.Column="1" Foreground="Red">❤</TextBlock>
             <TextBlock Grid.Column="2">By Rez</TextBlock>
         </Grid>
-        <Button Margin="0,10,0,10"  Height="20" Click="Button_Click">Send Your FeedBack or Extra Features</Button>
+        <Button Margin="0,10,0,10"  Height="20" Click="Button_Click">Report Bug, FeedBack or Extra Features </Button>
         
     </StackPanel>
 </Window>

@@ -9,7 +9,7 @@
         mc:Ignorable="d"
          WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
-        Title="Dialogue Maker V 0.1" Height="700" Width="620" Background="AliceBlue">
+        Title="Unity Dialogue Maker V0.1" Height="710" Width="620" Background="AliceBlue">
 
     <Window.DataContext>
         <vm:MainWindowViewModel></vm:MainWindowViewModel>
@@ -52,7 +52,7 @@
                     <TextBlock Grid.Column="0" Text="Emotions "></TextBlock>
                     <ComboBox Grid.Column="0" Name="combo_emo" Margin="0,0,0,10" Width="117" />
                     <TextBlock Grid.Column="1" Text="Branch "></TextBlock>
-                    <ComboBox Grid.Column="1" Name="combo_branch" Margin="0,0,0,10" Width="117"/>
+                    <ComboBox Grid.Column="1" FontWeight="ExtraBold" Name="combo_branch" Margin="0,0,0,10" Width="117"/>
                 </Grid>
 
                 <Grid Width="500">
@@ -60,7 +60,7 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Name="n_lines"  TextAlignment="left" Text="Line: 1"  Margin="50,8,105,0"></TextBlock>
+                    <TextBlock Name="n_lines" FontWeight="ExtraBlack" FontSize="15" TextAlignment="left" Text="Line: 1"  Margin="50,8,105,0"></TextBlock>
                     <TextBlock Name="n_chars" TextAlignment="Center" Opacity="0.9" Foreground="Gray" Text="Number of Characters 0/150" Margin="235,8,0,0" Grid.ColumnSpan="2"/>
                 </Grid>
 

@@ -48,11 +48,7 @@ namespace DialogMaker
         //object last_b_combo ;
      
         List<MultipleChoiceModel> dialogueChoiuces = new List<MultipleChoiceModel>();
-        //List<MultipleChoiceModel> choices_per_dialogue=new List<MultipleChoiceModel>();
-        //List<MultipleChoiceModel> inlistbox = new List<MultipleChoiceModel>();
-        //List<string> branch_id_list_tracker = new List<string>();
         List<List<MultipleChoiceModel>> choices_all=new List<List<MultipleChoiceModel>>();
-
         List<GameDialogue> dialogs=new List<GameDialogue>();
 
         public MainWindow()
@@ -64,8 +60,13 @@ namespace DialogMaker
             combo_branch.SelectedValue= last_branch_combo;
             //last_b_combo =  combo_branch.SelectedValue;
             read_parameter_file();
-        }
 
+            Closed += closedB;
+
+
+        }
+        
+    
         private void read_parameter_file()
         {
             string sp_filepath = "parameters\\speakers.txt";
@@ -181,7 +182,22 @@ namespace DialogMaker
                 action_textbox.Text = "";
         
                         dialog.styles = new List<DialogueStyleModel>(dialogueStyles);
-                        dialog.multiple_choice = new List<MultipleChoiceModel>(dialogueChoiuces);
+
+                if(dialogs.Count> thisLine - 1)
+         
+                if (dialogs[thisLine - 1].multiple_choice.Count > 0)
+                {
+                    dialog.multiple_choice = new List<MultipleChoiceModel>(dialogs[thisLine - 1].multiple_choice);
+                        
+                  
+
+                }
+
+                foreach (var dd in dialogueChoiuces)
+                    dialog.multiple_choice.Add(dd);
+
+
+                //dialog.multiple_choice = new List<MultipleChoiceModel>(dialogueChoiuces);
                         add_to_list(dialog, thisLine);
                         dialogueChoiuces.Clear();
                         dialogueChoiuces = new List<MultipleChoiceModel>();
@@ -232,8 +248,38 @@ namespace DialogMaker
             }
 
         }
+
+
+        private bool CheckBranchConsistency()
+        {
+
+            foreach(var d in dialogs)
+            {
+                bool flag = false;
+                if (d.branch_id.Equals(main_brach)) continue;
+                foreach(var dd in dialogs)
+                {
+                    foreach(var m in dd.multiple_choice)
+                    {
+                        if (d.branch_id.Equals(m.branch_name))
+                        {
+                            flag=true; break;
+                        }
+                    }
+                  
+                }
+                if(!flag ) {
+                    MessageBox.Show("Branch \""+ d.branch_id+ "\" Not Found");
+
+                    return false; } 
+            }
+            return true;
+        }
         private bool save()
         {
+            if(!CheckBranchConsistency()) {  return false; }
+
+
             try
             {
                 var path = FILE_PATH +"\\"+ name_file_textbox.Text + ".json";
@@ -246,7 +292,6 @@ namespace DialogMaker
                 }
                 else
                 {
-                   
                     file = File.Open(path, FileMode.Open);
                 }
                 file.Close();
@@ -660,37 +705,63 @@ namespace DialogMaker
             Process.Start("explorer.exe",path);
         }
 
+
+
         void add_to_ListView_choice(MultipleChoiceModel choice)
         {
             //ListBox_Chooices.Items.Add(choice.choice_head + "  |  " + choice.branch_name);
             BranchComponentModel BCM = new BranchComponentModel { BranchID = choice.branch_name, BranchName = choice.choice_head };
             BranchComponentViewModel BCVM = new BranchComponentViewModel();
             BCVM.BranchComponentBindig = BCM;
+            BCVM.OnBranchCommand += HandleCommand;
             MainWindowViewModel.Instance.BranchesCollection.Add(BCVM);
             // Save To Multi Choice
         }
 
+        private void HandleCommand(string  command, string branch_id)
+        {
+                switch(command)
+            {
+                case "delete":
+                    MultipleChoiceModel del_choice = new MultipleChoiceModel();
+                    if(dialogs.Count<= thisLine - 1)
+                    {
+                        MainWindowViewModel.Instance.DeleteFromBranches(branch_id);
+                        MultipleChoiceModel del_choice_tm = new MultipleChoiceModel();
+                        foreach (var dd in dialogueChoiuces)
+                        {
+                            if (dd.branch_name.Equals(branch_id))
+                                del_choice_tm = dd;
+                        }
+                        dialogueChoiuces.Remove(del_choice_tm);
+                        return;
+                    }
+                    foreach (var choi in dialogs[thisLine-1].multiple_choice)
+                        if (choi.branch_name.Equals(branch_id))
+                            del_choice = choi;
+                    Debug.WriteLine(del_choice.branch_name);
+                    if (del_choice != null) dialogs[thisLine - 1].multiple_choice.Remove(del_choice);
 
+                    MainWindowViewModel.Instance.DeleteFromBranches(branch_id);
+                    break;
+            }
+        }
 
 
 
         private void next_line_btn_Click(object sender, RoutedEventArgs e)
         {
+            dialogueChoiuces.Clear();
             Debug.WriteLine("this line:"+thisLine);
             if (thisLine - 1 != dialogs.Count)
             {
 
                 load_line(thisLine + 1);
                 thisLine++;
-                //CheckForBranchs();
                 prev_btn.IsEnabled = true;
             }
             else
             {
-
-                //if (thisLine+1 == dialogs.Count)
-                //    OpenEmptyUI();
-                ////thisLine = dialogs.Count + 1;
 
                 next_line_btn.IsEnabled = false;
             }
@@ -705,6 +776,7 @@ namespace DialogMaker
 
         private void prev_btn_Click(object sender, RoutedEventArgs e)
         {
+            dialogueChoiuces.Clear();
             if (thisLine != 1)
             {
 
@@ -721,28 +793,6 @@ namespace DialogMaker
             }
         }
 
-
-
-        //private List<string> del_branch_starter(List<string> branchs, List<GameDialogue> prevD)
-        //{
-        //    List<string> branch_starter = new List<string>();
-        //    foreach (var ch in prevD)
-        //    {
-        //        if (ch.multiple_choice.Count != 0)
-        //        {
-        //            branch_starter.Add(ch.branch_id);
-        //        }
-        //    }
-
-        //    foreach (var ch in branch_starter)
-        //    {
-        //        branchs.Remove(ch);
-        //    }
-        //    return branchs;
-        //}
-
-
-  
 
 
         private void ChoiceKeyDown_branch(object sender, KeyEventArgs e)
@@ -838,79 +888,8 @@ namespace DialogMaker
             return true;
         }
 
-        //void CheckForBranchs()
-        //{
-        //    combo_branch.SelectedItem = null;
-        //    combo_branch.Items.Clear();
-        //    List<string> branch_lists = new List<string>();
-        //    List<GameDialogue> prev_dialog = new List<GameDialogue>();
-
-
-
-
-        //    for (int i = 0; i < thisLine - 1; i++)
-        //    {
-        //        prev_dialog.Add(dialogs[i]);
-
-        //        if (dialogs[i].multiple_choice.Count != 0)
-        //        {
-
-        //            foreach (var ch in dialogs[i].multiple_choice)
-        //            {
-        //                branch_lists.Add(ch.branch_name);
-        //            }
-
-        //        }
-
-        //    }
-
-        //    branch_lists = del_branch_starter(branch_lists, prev_dialog);
-
-        //    foreach (var ch in branch_lists)
-        //    {
-        //        combo_branch.Items.Add(ch);
-        //    }
-
-        //    bool is_in = false;
-        //    if (last_branch_combo != null)
-        //        if (last_branch_combo.Equals(main_brach) && branch_lists.Count == 0)
-        //        {
-        //            combo_branch.Items.Add(last_branch_combo);
-        //            combo_branch.SelectedItem = main_brach;
-
-        //        }
-        //        else
-        //        {
-
-        //            foreach (var ch in branch_lists)
-        //            {
-        //                Debug.WriteLine(ch);
-
-        //                if (last_branch_combo.Equals(ch))
-        //                {
-        //                    is_in = true;
-        //                    break;
-        //                }
-
-        //            }
-
-        //            if (is_in)
-        //            {
-        //                combo_branch.SelectedValue = last_branch_combo;
-        //            }
-        //            else
-        //            {
-        //                combo_branch.SelectedValue = null;
-
-        //            }
-        //        }
-        //}
-          
-        
-
         void DeleteListViewBranch()
         {
-            
             MainWindowViewModel.Instance.BranchesCollection.Clear();
         }
 
@@ -976,8 +955,18 @@ namespace DialogMaker
                         if (list_branches[j].Equals(b_tmp))
                             index = j;
                     }
-                    list_branches.RemoveAt(index);
-                    list_branches.InsertRange(index, list_branches_tmp);
+                    try
+                    {
+                        Debug.WriteLine(index);
+                        list_branches.RemoveAt(index);
+                        list_branches.InsertRange(index, list_branches_tmp);
+                    }
+                    catch {
+                       
+                        MessageBox.Show("Branch must be fixed");
+                       
+                    }
+            
                 }
             }
 
@@ -989,21 +978,32 @@ namespace DialogMaker
 
 
 
-        AboutWindow win_about = new AboutWindow();
+        AboutWindow win_about ;
+        private void closedB(object sender, EventArgs e)
+        {
+            if(win_about!=null)
+            win_about.Close();
+            Process.GetCurrentProcess().Kill();
+        }
 
         private void about_window(object sender, RoutedEventArgs e)
         {
 
             //AboutWindow.Instance.Show();
              //win_about = new AboutWindow();
-            if(!win_about.IsLoaded)
-                 win_about = new AboutWindow();
 
-                win_about.Show();
+            if (win_about==null) win_about=new AboutWindow();
+            if (!win_about.IsLoaded)
+                win_about = new AboutWindow();
+
+            win_about.Show();
 
            
 
 
         }
+
+
+        
     }
 }

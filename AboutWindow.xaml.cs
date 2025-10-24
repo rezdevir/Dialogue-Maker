@@ -39,10 +39,8 @@ namespace DialogMaker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //System.Diagnostics.Process.Start("https://discord.gg/Be6Ux6H3");
-
-
-            string target = "https://discord.gg/Be6Ux6H3";
+            
+            string target = "https://discord.gg/J5yHwtf2Ng";
             OpenUrl(target);
         }
 

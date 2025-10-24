@@ -23,7 +23,20 @@ namespace DialogMaker.ViewModel
            
         }
 
+        public void DeleteFromBranches(string branchId)
+        {
+            int index = -1;
+            int iterator = 0;
+            foreach (var branch in BranchesCollection)
+            {
+               
+                if (branch.BranchComponentBindig.BranchID == branchId)
+                    index = iterator;
+                iterator++;
+            }
+            BranchesCollection.RemoveAt(index); 
 
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string? name = null) =>
