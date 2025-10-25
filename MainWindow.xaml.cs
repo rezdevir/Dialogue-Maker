@@ -102,8 +102,8 @@ namespace DialogMaker
             if (speaker.Contains("###"))
             {
                 Debug.WriteLine("HEre ");
-                
-                speaker=speaker.Replace("###", "");
+
+                speaker = speaker.Replace("###", "").Trim();
                 MainCharacter = speaker;
             }
                
@@ -407,9 +407,28 @@ namespace DialogMaker
            
             combo_emo.SelectedItem = dialog.emotion;
             action_textbox.Text = dialog.action_name;
-            combo_speakers.SelectedItem = dialog.speaker;
-            left_radio.IsChecked = dialog.isLeft;
-            text.Text = dialog.text;
+            int itt = 0;
+            foreach(var item in combo_speakers.Items)
+            {
+                Debug.WriteLine(item);
+                Debug.WriteLine($"{item} == {dialog.speaker} ? {item.Equals(dialog.speaker)}");
+                Debug.WriteLine($"Types: {item.GetType()} vs {dialog.speaker.GetType()}");
+                Debug.WriteLine($"Len: {item.ToString().Length} vs {dialog.speaker.Length}");
+                
+                if (item.ToString().Equals(dialog.speaker))
+                {
+                    Debug.WriteLine("Same");
+                    combo_speakers.SelectedIndex= itt;
+                }
+                itt++;
+            }
+          
+            Debug.WriteLine(dialog.speaker);
+            if (dialog.isLeft)
+                left_radio.IsChecked = true;
+            else
+                right_radio.IsChecked = true;
+                text.Text = dialog.text;
 
                 n_lines.Text = "Line : " + (line_).ToString();
             if(dialog.text!=null)
@@ -447,8 +466,7 @@ namespace DialogMaker
                     {
                         thisLine = dialogs.Count;
                     }
-                    Debug.WriteLine(thisLine);
-                    Debug.WriteLine(dialogs.Count);
+                   
                     dialogs.RemoveAt(thisLine - 1);
                   
                     Set_UI(new GameDialogue(), thisLine);
@@ -742,7 +760,7 @@ namespace DialogMaker
                     foreach (var choi in dialogs[thisLine-1].multiple_choice)
                         if (choi.branch_name.Equals(branch_id))
                             del_choice = choi;
-                    Debug.WriteLine(del_choice.branch_name);
+                    //Debug.WriteLine(del_choice.branch_name);
                     if (del_choice != null) dialogs[thisLine - 1].multiple_choice.Remove(del_choice);
 
                     MainWindowViewModel.Instance.DeleteFromBranches(branch_id);
@@ -951,7 +969,7 @@ namespace DialogMaker
             List<string> list_branches = new List<string>();
             combo_branch.SelectedItem = null;
             combo_branch.Items.Clear();
-            Debug.WriteLine(line);
+            //Debug.WriteLine(line);
             list_branches=Get_Previous_Branches(line);
             foreach (var b in list_branches)
                 combo_branch.Items.Add(b);
@@ -992,7 +1010,7 @@ namespace DialogMaker
                     }
                     try
                     {
-                        Debug.WriteLine(index);
+                        //Debug.WriteLine(index);
                         list_branches.RemoveAt(index);
                         list_branches.InsertRange(index, list_branches_tmp);
                     }
@@ -1006,8 +1024,8 @@ namespace DialogMaker
             }
 
 
-            foreach(var t in list_branches)
-                Debug.WriteLine(t);
+            //foreach(var t in list_branches)
+            //    Debug.WriteLine(t);
             return list_branches;   
         }
 
