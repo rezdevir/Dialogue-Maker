@@ -210,6 +210,6 @@ These files are ready for direct integration with the **Unity Dialogue Maker Plu
 ---
 
 ## 👤 Author
-
+Contact ME: <a href="https://discord.gg/J5yHwtf2Ng"> Discord </a>
 **Rez** – Programmer / System Designer  
 🎮 Focused on bridging the gap between writers and developers for faster, cleaner, and more creative narrative workflows.
