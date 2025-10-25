@@ -59,6 +59,8 @@ namespace DialogMaker
             last_branch_combo =(string) combo_branch.Items[0];
             combo_branch.SelectedValue= last_branch_combo;
             //last_b_combo =  combo_branch.SelectedValue;
+            if(!Directory.Exists(FILE_PATH))
+                Directory.CreateDirectory(FILE_PATH);
             read_parameter_file();
 
             Closed += closedB;
@@ -83,7 +85,8 @@ namespace DialogMaker
             }
             else
             {
-               
+                Directory.CreateDirectory(sp_filepath.Split("\\")[0]);
+                File.Create(sp_filepath);
             }
             if (File.Exists(emo_filepath))
             {
@@ -95,7 +98,11 @@ namespace DialogMaker
                     combo_emo.Items.Add(emo);
                 }
             }
-            else {  }
+            else {
+                Directory.CreateDirectory(emo_filepath.Split("\\")[0]);
+                File.Create(emo_filepath);
+            }
+
         }
         private string SpeakersHandler(string speaker)
         {
