@@ -150,7 +150,7 @@ If you delete a branch that’s already used in dialogue:
 Example:
 If `branch_hello` is deleted but 3 lines were using it,  
 → those lines will lose their branch connection and must be reassigned. 
-branch name automatically set in this order : branch_<the number of line>_<the number of brancher>
+branch name automatically set in this order : branch_**the number of line**_**the number of brancher**
 
 ---
 

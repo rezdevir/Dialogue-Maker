@@ -180,7 +180,9 @@ namespace DialogMaker
                 Debug.WriteLine("Line Saved");
                 text.Text = "";
                 action_textbox.Text = "";
-        
+                choice_text.Text = "";
+                choice_branch.Text = "";
+
                         dialog.styles = new List<DialogueStyleModel>(dialogueStyles);
 
                 if(dialogs.Count> thisLine - 1)
@@ -236,15 +238,16 @@ namespace DialogMaker
             if (dialogs.Count == line - 1)
             {
                 thisLine = thisLine + 1;
-                n_lines.Text = "line : " + (thisLine).ToString();
-
+                n_lines.Text = "Line : " + (thisLine).ToString();
+                Debug.WriteLine("line is:" + line + " and eq to dialogs.Count");
                 dialogs.Add(dialog);
             }
             else
             {
-                n_lines.Text = "line : " + (dialogs.Count + 1).ToString();
+                n_lines.Text = "Line : " + (dialogs.Count + 1).ToString();
                 dialogs.RemoveAt(thisLine - 1);
                 dialogs.Insert(thisLine-1, dialog);
+                Debug.WriteLine("line is:" + line +"and Dialogue is: "+dialogs.Count);
             }
 
         }
@@ -751,9 +754,9 @@ namespace DialogMaker
 
         private void next_line_btn_Click(object sender, RoutedEventArgs e)
         {
-            dialogueChoiuces.Clear();
+            ClearChoiceUI();
             Debug.WriteLine("this line:"+thisLine);
-            if (thisLine - 1 != dialogs.Count)
+            if (thisLine  != dialogs.Count)
             {
 
                 load_line(thisLine + 1);
@@ -762,6 +765,22 @@ namespace DialogMaker
             }
             else
             {
+
+
+                if (Submit_Dialog())
+                {
+                    if (thisLine - 1 == dialogs.Count)
+                    {
+                        text.Text = "";
+                    }
+                    else
+                    {
+                        thisLine++;
+                        prev_btn.IsEnabled = true;
+                        load_line(thisLine);
+                    }
+
+                }
 
                 next_line_btn.IsEnabled = false;
             }
@@ -776,7 +795,7 @@ namespace DialogMaker
 
         private void prev_btn_Click(object sender, RoutedEventArgs e)
         {
-            dialogueChoiuces.Clear();
+            ClearChoiceUI();
             if (thisLine != 1)
             {
 
@@ -793,7 +812,12 @@ namespace DialogMaker
             }
         }
 
-
+        void ClearChoiceUI()
+        {
+            dialogueChoiuces.Clear();
+            choice_text.Clear();
+            choice_branch.Clear();  
+        }
 
         private void ChoiceKeyDown_branch(object sender, KeyEventArgs e)
         {
@@ -835,9 +859,20 @@ namespace DialogMaker
                     else
                     {
                         // It has be unique 
-                        choice_branch.Text = Make_Name(thisLine, dialogueChoiuces.Count + 1);
+                        
+                        if(dialogs.Count>=thisLine)
+                        {
+                            if (dialogs[thisLine - 1].multiple_choice.Count>0)
+                            choice_branch.Text = Make_Name(thisLine, dialogs[thisLine - 1].multiple_choice.Count + 1);
+                            else
+                                choice_branch.Text = Make_Name(thisLine, dialogueChoiuces.Count + 1);
+                        }
+                           
+                        else 
+                            choice_branch.Text = Make_Name(thisLine, dialogueChoiuces.Count + 1);
                      
                     }
+
                     if (!SaveChoice(choice_text.Text, choice_branch.Text))
                     {
                         MessageBox.Show("Branch name is unique ");

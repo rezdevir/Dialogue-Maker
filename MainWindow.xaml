@@ -60,7 +60,7 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Name="n_lines" FontWeight="ExtraBlack" FontSize="15" TextAlignment="left" Text="Line: 1"  Margin="50,8,105,0"></TextBlock>
+                    <TextBlock Name="n_lines" FontWeight="ExtraBlack" FontSize="15" TextAlignment="left" Text="Line : 1"  Margin="50,8,105,0"></TextBlock>
                     <TextBlock Name="n_chars" TextAlignment="Center" Opacity="0.9" Foreground="Gray" Text="Number of Characters 0/150" Margin="235,8,0,0" Grid.ColumnSpan="2"/>
                 </Grid>
 
